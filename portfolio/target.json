@@ -1,0 +1,9 @@
+{
+  "allocation": {
+    "Stocks": 60,
+    "Bonds": 32,
+    "Cash": 8
+  },
+  "horizonYears": 25,
+  "notes": "Long-term investor. Edit these numbers to match your own target mix."
+}

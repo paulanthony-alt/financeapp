@@ -101,6 +101,7 @@ export const ALLOCATION_COLORS = {
   Stocks: '#4f46e5',
   Bonds: '#06b6d4',
   Cash: '#f59e0b',
+  Mixed: '#8b5cf6',
 }
 
 /** Map a total questionnaire score to a risk profile id. Max score = 8. */

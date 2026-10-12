@@ -16,6 +16,9 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Recharts**.
 - Filter transactions by category.
 
 ### 📈 Investment suggestions
+- **Import from Fidelity**: load your Positions CSV export to see holdings, actual
+  allocation, and drift from your target. Projections start from your real balance.
+  The file is parsed in your browser and never uploaded.
 - A short **risk-tolerance questionnaire** (conservative / moderate / aggressive).
 - A suggested **asset allocation** (stocks / bonds / cash) based on your answers,
   or explore any profile manually.
@@ -67,6 +70,14 @@ src/
    ├─ invest/              # InvestSection + questionnaire, allocation, calculator
    └─ goals/               # GoalsSection + goal cards and editor
 ```
+
+## Investing brief
+
+A scheduled Claude routine researches the economic and geopolitical news roughly
+every 3 days and delivers a private brief. It opens with what looks like a good
+idea to invest in for the long term, then covers the macro picture, your
+portfolio's exposure and drift, and fund/sector ideas to research. See
+[`portfolio/README.md`](portfolio/README.md) to let it read your holdings.
 
 ## Disclaimer
 
