@@ -14,7 +14,7 @@ import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import { projectionSeries, futureValue } from '../../lib/finance.js'
 import { money, percent } from '../../lib/format.js'
 
-export default function GrowthCalculator({ profile }) {
+export default function GrowthCalculator({ profile, portfolioValue }) {
   const [calc, setCalc] = useLocalStorage('fp:invest:calc', {
     principal: 1000,
     monthly: 300,
@@ -25,16 +25,20 @@ export default function GrowthCalculator({ profile }) {
   // When a profile is active, its assumed return drives the projection.
   const rate = profile ? profile.assumedReturn : calc.rate
 
+  // Default to the imported Fidelity balance whenever one exists.
+  const fromPortfolio = portfolioValue != null && calc.useFidelity !== false
+  const principal = fromPortfolio ? Math.max(0, portfolioValue) : calc.principal
+
   const update = (k) => (e) =>
     setCalc((c) => ({ ...c, [k]: Math.max(0, Number(e.target.value) || 0) }))
 
   const series = useMemo(
-    () => projectionSeries(calc.principal, calc.monthly, rate, calc.years),
-    [calc.principal, calc.monthly, calc.years, rate],
+    () => projectionSeries(principal, calc.monthly, rate, calc.years),
+    [principal, calc.monthly, calc.years, rate],
   )
 
-  const finalBalance = futureValue(calc.principal, calc.monthly, rate, calc.years)
-  const invested = calc.principal + calc.monthly * calc.years * 12
+  const finalBalance = futureValue(principal, calc.monthly, rate, calc.years)
+  const invested = principal + calc.monthly * calc.years * 12
   const growth = finalBalance - invested
 
   return (
@@ -51,11 +55,23 @@ export default function GrowthCalculator({ profile }) {
       <div className="grid gap-6 lg:grid-cols-5">
         {/* Inputs */}
         <div className="space-y-4 lg:col-span-2">
+          {portfolioValue != null && (
+            <label className="flex items-center gap-2 rounded-xl bg-brand-50 p-3 text-sm text-brand-700 ring-1 ring-brand-100">
+              <input
+                type="checkbox"
+                className="h-4 w-4 accent-brand-600"
+                checked={fromPortfolio}
+                onChange={(e) => setCalc((c) => ({ ...c, useFidelity: e.target.checked }))}
+              />
+              Start from my Fidelity balance ({money(portfolioValue)})
+            </label>
+          )}
           <Field
             label="Starting amount"
-            value={calc.principal}
+            value={fromPortfolio ? Math.round(principal) : calc.principal}
             onChange={update('principal')}
             prefix="$"
+            disabled={fromPortfolio}
           />
           <Field
             label="Monthly contribution"
@@ -165,7 +181,7 @@ export default function GrowthCalculator({ profile }) {
   )
 }
 
-function Field({ label, value, onChange, prefix }) {
+function Field({ label, value, onChange, prefix, disabled = false }) {
   return (
     <div>
       <label className="label">{label}</label>
@@ -176,11 +192,12 @@ function Field({ label, value, onChange, prefix }) {
           </span>
         )}
         <input
-          className={`input ${prefix ? 'pl-7' : ''}`}
+          className={`input ${prefix ? 'pl-7' : ''} disabled:bg-slate-50 disabled:text-slate-500`}
           type="number"
           min="0"
           value={value}
           onChange={onChange}
+          disabled={disabled}
         />
       </div>
     </div>
