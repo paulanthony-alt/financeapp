@@ -9,6 +9,8 @@ import AllocationCard from './AllocationCard.jsx'
 import GrowthCalculator from './GrowthCalculator.jsx'
 import PortfolioCard from './PortfolioCard.jsx'
 import PortfolioHistory from './PortfolioHistory.jsx'
+import RebalanceCard from './RebalanceCard.jsx'
+import FundCostsCard from './FundCostsCard.jsx'
 import { AlertIcon } from '../../components/Icons.jsx'
 
 export default function InvestSection() {
@@ -71,6 +73,10 @@ export default function InvestSection() {
         onClear={() => setPortfolio(null)}
         onOverride={(symbol, cls) => setClassOverrides((o) => ({ ...o, [symbol]: cls }))}
       />
+
+      {summary && <RebalanceCard summary={summary} profile={profile} />}
+
+      {summary && <FundCostsCard summary={summary} profile={profile} />}
 
       {(portfolio || history.length > 0) && (
         <PortfolioHistory history={history} onClear={() => setHistory([])} />
