@@ -7,11 +7,16 @@ jobs:
   probe:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-      - name: Run IPO check against real data
-        env:
-          IPO_EXTRA: Reddit,Rubrik,Arm Holdings,Instacart
-        run: node scripts/fetch-ipo-status.mjs /tmp/ipo-status.json && head -c 3000 /tmp/ipo-status.json
+      - name: Which SEC endpoints answer from GitHub runners?
+        run: |
+          UA="FinPilot personal finance app paulanthony-alt@users.noreply.github.com"
+          probe() { code=$(curl -s -o /tmp/body -w "%{http_code}" -A "$UA" -H "Accept-Encoding: gzip, deflate" --compressed "$1"); echo "$code  $1"; head -c ${2:-300} /tmp/body | tr '\n' ' '; echo; echo; }
+          probe 'https://efts.sec.gov/LATEST/search-index?q=%22Reddit%22&forms=S-1'
+          probe 'https://efts.sec.gov/LATEST/search-index?q=%22Reddit%22&forms=S-1' 
+          probe 'https://data.sec.gov/submissions/CIK0001713445.json' 600
+          probe 'https://www.sec.gov/files/company_tickers.json' 200
+          probe 'https://www.sec.gov/cgi-bin/browse-edgar?company=reddit&type=S-1&dateb=&owner=include&count=10&action=getcompany&output=atom' 1500
+          probe 'https://www.sec.gov/cgi-bin/browse-edgar?company=anthropic&type=&dateb=&owner=include&count=10&action=getcompany&output=atom' 1500
+          probe 'https://www.sec.gov/cgi-bin/browse-edgar?action=getcurrent&type=S-1&company=&dateb=&owner=include&start=0&count=10&output=atom' 800
+          echo "--- efts with browser UA ---"
+          code=$(curl -s -o /tmp/body -w "%{http_code}" -A "Mozilla/5.0" "https://efts.sec.gov/LATEST/search-index?q=%22Reddit%22&forms=S-1"); echo $code; head -c 300 /tmp/body
