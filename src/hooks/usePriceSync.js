@@ -1,8 +1,12 @@
 import { useEffect } from 'react'
 import { readStored, writeStored } from './useLocalStorage.js'
 import { revaluePortfolio, dailySnapshots, mergeDailyHistory } from '../lib/prices.js'
+import { applyIpoStatus, mergeAlerts } from '../lib/ipoSync.js'
+import { DEFAULT_WATCHLIST } from '../lib/ipo.js'
+import { todayISO } from '../lib/format.js'
 
 const PRICES_URL = `${import.meta.env.BASE_URL}prices.json`
+const IPO_URL = `${import.meta.env.BASE_URL}ipo-status.json`
 
 /** Fetch the nightly closing prices and apply them to the imported portfolio. */
 export async function syncPrices(fetchImpl = fetch) {
@@ -35,6 +39,24 @@ export async function syncPrices(fetchImpl = fetch) {
   return { status: 'ok', ...result }
 }
 
+/** Fetch the nightly IPO check and move watchlist companies forward. */
+export async function syncIpo(fetchImpl = fetch) {
+  let status
+  try {
+    const res = await fetchImpl(IPO_URL, { cache: 'no-cache' })
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    status = await res.json()
+  } catch {
+    return { status: 'unavailable' }
+  }
+  const watchlist = readStored('fp:ipo:watchlist') || DEFAULT_WATCHLIST(todayISO())
+  const result = applyIpoStatus(watchlist, status)
+  if (result.changed) writeStored('fp:ipo:watchlist', result.list)
+  if (result.alerts.length) writeStored('fp:ipo:alerts', mergeAlerts(readStored('fp:ipo:alerts', []), result.alerts))
+  writeStored('fp:ipo:tracked', { names: result.tracked, updatedAt: status.updatedAt || null })
+  return { status: 'ok', ...result }
+}
+
 /** Run the sync when the app opens and whenever it comes back to the foreground. */
 export function usePriceSync() {
   useEffect(() => {
@@ -42,7 +64,7 @@ export function usePriceSync() {
     const run = () => {
       if (running || document.visibilityState === 'hidden') return
       running = true
-      syncPrices().finally(() => {
+      Promise.allSettled([syncPrices(), syncIpo()]).finally(() => {
         running = false
       })
     }

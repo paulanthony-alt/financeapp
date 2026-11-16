@@ -2,6 +2,7 @@ import { lazy, Suspense, useId, useState } from 'react'
 import { Sidebar, TabBar, TABS } from './components/Sidebar.jsx'
 import DataModal from './components/DataModal.jsx'
 import ImportLinkModal from './components/ImportLinkModal.jsx'
+import IpoAlerts from './components/IpoAlerts.jsx'
 import { DatabaseIcon } from './components/Icons.jsx'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
 import { usePriceSync } from './hooks/usePriceSync.js'
@@ -64,6 +65,8 @@ export default function App() {
             </h1>
             <p className="mt-2 max-w-2xl text-[15px] text-slate-500">{sectionSubtitle(active)}</p>
           </header>
+
+          <IpoAlerts onOpen={() => setActive('ipo')} />
 
           <Suspense fallback={<LoadingCards />}>
             {current.id === 'budget' && <BudgetSection />}

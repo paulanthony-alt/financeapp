@@ -48,8 +48,8 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
-  // Nightly prices: always try for fresh ones, fall back to the last copy offline.
-  if (url.pathname.endsWith('/prices.json')) {
+  // Nightly prices and IPO status: always try for fresh ones, fall back to the last copy offline.
+  if (/\/(prices|ipo-status)\.json$/.test(url.pathname)) {
     event.respondWith(
       fetch(req)
         .then((res) => {

@@ -363,3 +363,55 @@ describe('investment ideas', () => {
     expect(screen.getByText('Mind the lock-up')).toBeTruthy()
   })
 })
+
+describe('automatic IPO updates', () => {
+  it('moves a watched company forward from the nightly check and shows a dismissible banner', async () => {
+    const realFetch = globalThis.fetch
+    globalThis.fetch = vi.fn(async (url) => {
+      if (String(url).endsWith('ipo-status.json')) {
+        return {
+          ok: true,
+          json: async () => ({
+            updatedAt: '2026-11-21T01:30:00Z',
+            companies: { anthropic: { name: 'Anthropic', stage: 'trading', since: '2026-11-20', ticker: 'ANTH', exchange: 'NasdaqGS', form: '424B4', url: 'https://www.sec.gov/x', checkedAt: '2026-11-21T01:30:00Z' } },
+          }),
+        }
+      }
+      return { ok: false, status: 404 }
+    })
+    try {
+      store.set('fp:activeTab', 'ipo')
+      render(<App />)
+      expect(await screen.findByText('Anthropic started trading on 2026-11-20 as ANTH (NasdaqGS).')).toBeTruthy()
+      await waitFor(() => expect(store.get('fp:ipo:watchlist')[0]).toMatchObject({ stage: 'trading', ticker: 'ANTH' }))
+      const card = screen.getByRole('heading', { level: 3, name: /Anthropic/ }).closest('.card')
+      expect(within(card).getByText('Trading', { selector: 'p' })).toBeTruthy()
+      expect(within(card).getByText(/Checked automatically each night on SEC EDGAR/)).toBeTruthy()
+
+      fireEvent.click(screen.getByRole('button', { name: /^Dismiss: Anthropic started trading/ }))
+      await waitFor(() => expect(screen.queryByText(/Anthropic started trading on/)).toBeNull())
+      expect(store.get('fp:ipo:alerts')[0].seen).toBe(true)
+    } finally {
+      globalThis.fetch = realFetch
+    }
+  })
+
+  it('says when a company is not in the nightly check', async () => {
+    const realFetch = globalThis.fetch
+    globalThis.fetch = vi.fn(async (url) =>
+      String(url).endsWith('ipo-status.json')
+        ? { ok: true, json: async () => ({ updatedAt: 'x', companies: { anthropic: { name: 'Anthropic', stage: null } } }) }
+        : { ok: false, status: 404 },
+    )
+    try {
+      store.set('fp:activeTab', 'ipo')
+      render(<App />)
+      fireEvent.change(await screen.findByLabelText('Add a company to watch'), { target: { value: 'Stripe' } })
+      fireEvent.click(screen.getByRole('button', { name: 'Watch' }))
+      const stripe = (await screen.findByRole('heading', { level: 3, name: 'Stripe' })).closest('.card')
+      expect(await within(stripe).findByText(/Not checked automatically yet/)).toBeTruthy()
+    } finally {
+      globalThis.fetch = realFetch
+    }
+  })
+})
