@@ -40,10 +40,10 @@ export default function AllocationCard({ profile, complete, activeProfileId, onP
                   stroke="none"
                 >
                   {data.map((d) => (
-                    <Cell key={d.name} fill={ALLOCATION_COLORS[d.name] || '#94a3b8'} />
+                    <Cell key={d.name} fill={ALLOCATION_COLORS[d.name] || '#a8946a'} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(v) => `${v}%`} />
+                <Tooltip contentStyle={{ background: '#fffdf5', border: '2px solid #2f271d', borderRadius: 12, boxShadow: '3px 3px 0 #2f271d', fontWeight: 600 }} formatter={(v) => `${v}%`} />
               </PieChart>
             </ResponsiveContainer>
             <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
@@ -62,7 +62,7 @@ export default function AllocationCard({ profile, complete, activeProfileId, onP
                 <span className="flex items-center gap-2 text-slate-600">
                   <span
                     className="h-2.5 w-2.5 rounded-full"
-                    style={{ backgroundColor: ALLOCATION_COLORS[d.name] || '#94a3b8' }}
+                    style={{ backgroundColor: ALLOCATION_COLORS[d.name] || '#a8946a' }}
                   />
                   {d.name}
                 </span>
@@ -87,7 +87,7 @@ export default function AllocationCard({ profile, complete, activeProfileId, onP
               onClick={() => onPick(p.id)}
               className={`flex-1 rounded-lg border px-2 py-1.5 text-xs font-semibold capitalize transition ${
                 activeProfileId === p.id
-                  ? 'border-brand-600 bg-brand-50 text-brand-700'
+                  ? 'border-ink bg-gold-100 text-ink shadow-comic-sm'
                   : 'border-slate-200 text-slate-500 hover:border-slate-300'
               }`}
             >

@@ -72,7 +72,7 @@ export default function PortfolioCard({ portfolio, summary, profile, onImport, o
       />
 
       {error && (
-        <p className="mb-4 rounded-xl bg-red-50 p-3 text-sm font-medium text-red-600 ring-1 ring-red-100">
+        <p className="mb-4 rounded-xl border-2 border-ink bg-red-50 p-3 text-sm font-semibold text-red-700 shadow-comic-sm">
           {error}
         </p>
       )}
@@ -183,7 +183,7 @@ function AllocationDonut({ byClass, total }) {
                 <Cell key={d.name} fill={ALLOCATION_COLORS[d.name]} />
               ))}
             </Pie>
-            <Tooltip formatter={(v) => `${money(v)} (${percent(v / total)})`} />
+            <Tooltip contentStyle={{ background: '#fffdf5', border: '2px solid #2f271d', borderRadius: 12, boxShadow: '3px 3px 0 #2f271d', fontWeight: 600 }} formatter={(v) => `${money(v)} (${percent(v / total)})`} />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -245,7 +245,7 @@ function DriftTable({ byClass, total, profile }) {
 
 function MiniStat({ label, value, sub }) {
   return (
-    <div className="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
+    <div className="rounded-xl border-2 border-slate-300 bg-slate-50 p-3">
       <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
       <p className="mt-1 text-lg font-extrabold tabular-nums text-slate-800">{value}</p>
       {sub && <p className="text-xs text-slate-400">{sub}</p>}

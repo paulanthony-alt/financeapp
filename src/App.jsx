@@ -1,9 +1,10 @@
-import { useState } from 'react'
 import { Sidebar, TabBar, TABS } from './components/Sidebar.jsx'
 import BudgetSection from './sections/budget/BudgetSection.jsx'
 import InvestSection from './sections/invest/InvestSection.jsx'
 import GoalsSection from './sections/goals/GoalsSection.jsx'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
+
+const MONEYBAG = `${import.meta.env.BASE_URL}moneybag.png`
 
 export default function App() {
   const [active, setActive] = useLocalStorage('fp:activeTab', 'budget')
@@ -12,9 +13,10 @@ export default function App() {
 
   return (
     <div className="min-h-full">
-      <div className="mx-auto flex max-w-7xl">
-        {/* Desktop sidebar */}
-        <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col border-r border-slate-200 bg-white px-4 py-6 lg:flex">
+      <div className="flex">
+        {/* Desktop sidebar — the vault */}
+        <aside className="sticky top-0 hidden h-screen w-72 shrink-0 flex-col overflow-hidden border-r-4 border-ink bg-money px-4 py-6 text-white lg:flex">
+          <VaultRivets />
           <Brand />
           <div className="mt-8">
             <Sidebar active={active} onSelect={setActive} />
@@ -25,20 +27,24 @@ export default function App() {
         </aside>
 
         {/* Main */}
-        <main className="min-w-0 flex-1 px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
+        <main className="mx-auto min-w-0 max-w-6xl flex-1 px-4 py-5 sm:px-6 lg:px-10 lg:py-8">
           {/* Mobile header + tabs */}
           <div className="lg:hidden">
-            <div className="mb-4 flex items-center justify-between">
+            <div className="-mx-4 -mt-5 mb-4 flex items-center justify-between border-b-4 border-ink bg-money px-4 py-3 sm:-mx-6 sm:px-6">
               <Brand compact />
             </div>
             <TabBar active={active} onSelect={setActive} />
           </div>
 
-          <header className="mb-6 mt-5 lg:mt-0">
-            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-              {current.label}
-            </h1>
-            <p className="text-sm text-slate-500">{sectionSubtitle(active)}</p>
+          <header className="mb-7 mt-6 lg:mt-0">
+            <div className="flex items-center gap-3">
+              <span className="coin h-10 w-10 text-xl" aria-hidden="true">$</span>
+              <h1 className="title-gold text-4xl sm:text-5xl">{current.label}</h1>
+            </div>
+            <p className="mt-2 font-serif text-base italic text-slate-600">
+              {sectionSubtitle(active)}
+            </p>
+            <div className="mt-4 h-1.5 w-40 rounded-full border-2 border-ink bg-gold" aria-hidden="true" />
           </header>
 
           {active === 'budget' && <BudgetSection />}
@@ -53,11 +59,11 @@ export default function App() {
 function sectionSubtitle(id) {
   switch (id) {
     case 'budget':
-      return 'Set limits, log transactions, and watch your spending by category.'
+      return 'Count every coin — set limits, log transactions, and watch where the money goes.'
     case 'invest':
-      return 'Find a risk profile and see how contributions could grow over time.'
+      return 'Find your risk profile and watch your fortune compound over time.'
     case 'goals':
-      return 'Create savings goals and stay on pace to hit them.'
+      return 'Fill the vault one goal at a time and stay on pace to hit each one.'
     default:
       return ''
   }
@@ -65,25 +71,47 @@ function sectionSubtitle(id) {
 
 function Brand({ compact = false }) {
   return (
-    <div className="flex items-center gap-2.5">
-      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand-600 text-white shadow-sm">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 17l6-6 4 4 8-8" />
-          <path d="M17 7h4v4" />
-        </svg>
+    <div className="relative flex items-center gap-3">
+      <img
+        src={MONEYBAG}
+        alt=""
+        className={`animate-jingle drop-shadow-[3px_3px_0_#2f271d] ${compact ? 'h-10 w-auto' : 'h-14 w-auto'}`}
+      />
+      <div className="leading-none">
+        <div className={`title-gold ${compact ? 'text-2xl' : 'text-3xl'}`}>FinPilot</div>
+        {!compact && (
+          <div className="mt-1.5 font-serif text-sm italic text-gold-200">Your personal money bin</div>
+        )}
       </div>
-      <div className="leading-tight">
-        <div className="text-lg font-extrabold tracking-tight text-slate-900">FinPilot</div>
-        {!compact && <div className="text-xs text-slate-400">Personal finance</div>}
-      </div>
+    </div>
+  )
+}
+
+// Decorative vault-door rivets in the sidebar corners.
+function VaultRivets() {
+  const rivet = 'absolute h-3 w-3 rounded-full border-2 border-ink bg-gold shadow-coin'
+  return (
+    <div aria-hidden="true">
+      <span className={`${rivet} left-2 top-2`} />
+      <span className={`${rivet} right-2 top-2`} />
+      <span className={`${rivet} bottom-2 left-2`} />
+      <span className={`${rivet} bottom-2 right-2`} />
+      <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full border-[10px] border-gold-500/20" />
+      <div className="pointer-events-none absolute -bottom-6 -right-6 h-32 w-32 rounded-full border-[6px] border-gold-500/20" />
     </div>
   )
 }
 
 function DataFooter() {
   return (
-    <div className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500 ring-1 ring-slate-100">
-      <p className="font-semibold text-slate-600">Private by design</p>
+    <div className="relative rounded-xl border-2 border-ink bg-vault/70 p-3 text-xs text-brand-100 shadow-comic-sm">
+      <p className="flex items-center gap-1.5 font-extrabold uppercase tracking-widest text-gold-300">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <rect x="4" y="10" width="16" height="11" rx="2" />
+          <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+        </svg>
+        Locked in the vault
+      </p>
       <p className="mt-1 leading-relaxed">
         All data is stored only in this browser (localStorage). Nothing is sent to a
         server.

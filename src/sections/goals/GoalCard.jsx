@@ -32,7 +32,7 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
         <div className="flex items-center gap-2.5 min-w-0">
           <span
             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-              complete ? 'bg-emerald-100 text-emerald-600' : 'bg-brand-100 text-brand-600'
+              complete ? 'border-2 border-ink bg-brand-400 text-white shadow-comic-sm' : 'border-2 border-ink bg-gold text-ink shadow-comic-sm'
             }`}
           >
             {complete ? <CheckIcon /> : <TargetIcon />}
@@ -77,7 +77,7 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
       </div>
 
       {/* Status line */}
-      <div className="mt-4 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
+      <div className="mt-4 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 p-3">
         {complete ? (
           <p className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600">
             <CheckIcon width={16} height={16} /> Goal reached — nice work!
@@ -103,7 +103,7 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
               <button
                 key={amt}
                 onClick={() => onContribute(amt)}
-                className="chip border border-slate-200 bg-white text-slate-600 hover:border-brand-300 hover:text-brand-600"
+                className="chip border-2 border-ink bg-gold-100 text-ink shadow-comic-sm transition hover:bg-gold-300 active:translate-x-px active:translate-y-px active:shadow-none"
               >
                 +${amt}
               </button>

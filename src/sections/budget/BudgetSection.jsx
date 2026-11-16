@@ -99,7 +99,7 @@ export default function BudgetSection() {
 
       {/* Over-budget alert */}
       {overBudgetCats.length > 0 && (
-        <div className="flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 p-4 text-red-700">
+        <div className="flex items-start gap-3 rounded-2xl border-2 border-ink bg-red-50 p-4 text-red-800 shadow-comic">
           <AlertIcon width={20} height={20} className="mt-0.5 shrink-0" />
           <div className="text-sm">
             <p className="font-semibold">

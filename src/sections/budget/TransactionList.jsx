@@ -71,7 +71,7 @@ export default function TransactionList({ transactions, categories, onAdd, onEdi
               <li key={t.id} className="group flex items-center gap-3 py-3">
                 <span
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
-                  style={{ backgroundColor: cat?.color || '#94a3b8' }}
+                  style={{ backgroundColor: cat?.color || '#a8946a' }}
                 >
                   <WalletIcon width={16} height={16} />
                 </span>
@@ -117,7 +117,7 @@ function FilterChip({ active, onClick, children }) {
       onClick={onClick}
       className={`chip border transition ${
         active
-          ? 'border-brand-600 bg-brand-600 text-white'
+          ? 'border-ink bg-gold text-ink shadow-comic-sm'
           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
       }`}
     >
