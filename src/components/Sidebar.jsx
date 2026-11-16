@@ -1,9 +1,10 @@
-import { WalletIcon, ChartIcon, TargetIcon } from './Icons.jsx'
+import { WalletIcon, ChartIcon, TargetIcon, BankIcon } from './Icons.jsx'
 
 export const TABS = [
   { id: 'budget', label: 'Budget', icon: WalletIcon, desc: 'Track income & spending' },
   { id: 'invest', label: 'Investing', icon: ChartIcon, desc: 'Risk & projections' },
   { id: 'goals', label: 'Goals', icon: TargetIcon, desc: 'Savings targets' },
+  { id: 'networth', label: 'Net worth', icon: BankIcon, desc: 'Assets & debts' },
 ]
 
 function NavItem({ tab, active, onClick }) {
@@ -65,12 +66,12 @@ export function TabBar({ active, onSelect }) {
             key={tab.id}
             onClick={() => onSelect(tab.id)}
             aria-current={isActive ? 'page' : undefined}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-none px-2 py-2 text-sm font-semibold transition ${
+            className={`flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-none px-1 py-2 text-[11px] font-semibold transition sm:flex-row sm:gap-2 sm:px-2 sm:text-sm ${
               isActive ? 'bg-brand-800 text-white shadow-sm' : 'text-slate-500'
             }`}
           >
             <Icon width={16} height={16} />
-            <span>{tab.label}</span>
+            <span className="whitespace-nowrap">{tab.label}</span>
           </button>
         )
       })}

@@ -83,3 +83,47 @@ export const SparkIcon = (p) => (
     <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" />
   </svg>
 )
+
+export const ChevronLeftIcon = (p) => (
+  <svg {...base} {...p}>
+    <path d="M15 18l-6-6 6-6" />
+  </svg>
+)
+
+export const ChevronRightIcon = (p) => (
+  <svg {...base} {...p}>
+    <path d="M9 18l6-6-6-6" />
+  </svg>
+)
+
+export const RepeatIcon = (p) => (
+  <svg {...base} {...p}>
+    <path d="M17 2l4 4-4 4" />
+    <path d="M3 11V9a3 3 0 0 1 3-3h15" />
+    <path d="M7 22l-4-4 4-4" />
+    <path d="M21 13v2a3 3 0 0 1-3 3H3" />
+  </svg>
+)
+
+export const DownloadIcon = (p) => (
+  <svg {...base} {...p}>
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+    <path d="M7 10l5 5 5-5M12 15V3" />
+  </svg>
+)
+
+export const DatabaseIcon = (p) => (
+  <svg {...base} {...p}>
+    <ellipse cx="12" cy="5" rx="9" ry="3" />
+    <path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5" />
+    <path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3" />
+  </svg>
+)
+
+export const BankIcon = (p) => (
+  <svg {...base} {...p}>
+    <path d="M3 10l9-6 9 6" />
+    <path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8" />
+    <path d="M3 21h18" />
+  </svg>
+)

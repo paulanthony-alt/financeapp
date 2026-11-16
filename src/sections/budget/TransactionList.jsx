@@ -25,7 +25,7 @@ export default function TransactionList({ transactions, categories, onAdd, onEdi
     <Card>
       <CardHeader
         title="Transactions"
-        subtitle={`${transactions.length} logged`}
+        subtitle={`${transactions.length} this month`}
         action={
           <button className="btn-primary" onClick={onAdd}>
             <PlusIcon width={16} height={16} />
@@ -80,7 +80,7 @@ export default function TransactionList({ transactions, categories, onAdd, onEdi
                     {t.description || cat?.name || 'Expense'}
                   </p>
                   <p className="text-xs text-slate-400">
-                    {cat?.name || 'Uncategorized'} · {prettyDate(t.date)}
+                    {cat?.name || 'Uncategorized'} · {prettyDate(t.date)}{t.recurringId ? ' · recurring' : ''}
                   </p>
                 </div>
                 <span className="shrink-0 text-sm font-bold tabular-nums text-slate-800">
