@@ -4,6 +4,8 @@ import { RISK_QUESTIONS, RISK_PROFILES, scoreToProfile } from '../../lib/constan
 import { summarizePortfolio } from '../../lib/fidelity.js'
 import { upsertSnapshot, portfolioSnapshot } from '../../lib/history.js'
 import { todayISO } from '../../lib/format.js'
+import { syncPrices } from '../../hooks/usePriceSync.js'
+import { writeStored } from '../../hooks/useLocalStorage.js'
 import RiskQuestionnaire from './RiskQuestionnaire.jsx'
 import AllocationCard from './AllocationCard.jsx'
 import GrowthCalculator from './GrowthCalculator.jsx'
@@ -26,9 +28,11 @@ export default function InvestSection() {
 
   // Each import also saves a dated snapshot for the history chart.
   const importPortfolio = (next) => {
-    setPortfolio(next)
     const snap = portfolioSnapshot(todayISO(), summarizePortfolio(next.holdings, classOverrides))
-    setHistory((h) => upsertSnapshot(h, snap))
+    writeStored('fp:invest:portfolio', next)
+    writeStored('fp:invest:history', upsertSnapshot(history, snap))
+    // Apply the latest nightly closes straight away (no-op if they're older).
+    syncPrices()
   }
 
   const summary = useMemo(

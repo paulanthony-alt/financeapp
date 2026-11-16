@@ -269,3 +269,52 @@ Individual,MSFT,MICROSOFT CORP,1,$300.00,$200.00
     }
   })
 })
+
+describe('nightly price sync', () => {
+  const portfolio = {
+    importedAt: '2026-11-16T05:00:00.000Z',
+    fileName: 'p.csv',
+    accountCount: 1,
+    holdings: [
+      { symbol: 'MSFT', description: 'MICROSOFT CORP', value: 273.98, quantity: 0.523, costBasis: 199.94, costKnownValue: 273.98 },
+      { symbol: 'CORE', description: 'HELD IN MONEY MARKET', value: 3.18, quantity: 0, coreCash: true, costBasis: 3.18, costKnownValue: 3.18 },
+    ],
+  }
+  const prices = { updatedAt: '2026-11-18T01:30:00Z', closes: { MSFT: [['2026-11-16', 530], ['2026-11-17', 540]] } }
+
+  it('revalues the imported portfolio from the latest closes and records daily history', async () => {
+    const realFetch = globalThis.fetch
+    globalThis.fetch = vi.fn(async (url) => {
+      expect(String(url)).toMatch(/prices\.json$/)
+      return { ok: true, json: async () => prices }
+    })
+    try {
+      store.set('fp:activeTab', 'invest')
+      store.set('fp:invest:portfolio', portfolio)
+      render(<App />)
+      // 0.523 * 540 = 282.42, plus cash 3.18
+      await waitFor(() => expect(store.get('fp:invest:portfolio').holdings[0]).toMatchObject({ value: 282.42, priceDate: '2026-11-17' }))
+      expect(await screen.findByText(/Prices as of Nov 17, 2026 close/)).toBeTruthy()
+      expect(await screen.findByText('$286')).toBeTruthy()
+      expect(screen.getByText(/\+\$5\.23 \(\+1\.9%\) last day/)).toBeTruthy()
+      expect(store.get('fp:invest:history').map((h) => h.date)).toEqual(['2026-11-16', '2026-11-17'])
+      expect(store.get('fp:prices:status')).toMatchObject({ asOf: '2026-11-17', missing: [] })
+    } finally {
+      globalThis.fetch = realFetch
+    }
+  })
+
+  it('leaves everything alone when prices are unavailable', async () => {
+    const realFetch = globalThis.fetch
+    globalThis.fetch = vi.fn(async () => ({ ok: false, status: 404 }))
+    try {
+      store.set('fp:invest:portfolio', portfolio)
+      render(<App />)
+      await waitFor(() => expect(globalThis.fetch).toHaveBeenCalled())
+      expect(store.get('fp:invest:portfolio')).toEqual(portfolio)
+      expect(window.localStorage.getItem('fp:prices:status')).toBeNull()
+    } finally {
+      globalThis.fetch = realFetch
+    }
+  })
+})

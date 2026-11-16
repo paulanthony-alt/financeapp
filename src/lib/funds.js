@@ -38,7 +38,7 @@ export const FUNDS = {
 
 // Large companies that are long-standing S&P 500 members (so also in total-market
 // funds). Used to spot owning a stock directly and again through an index fund.
-const SP500_GIANTS = new Set([
+export const SP500_GIANTS = new Set([
   'AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOGL', 'GOOG', 'META', 'TSLA', 'BRK.B', 'AVGO', 'JPM', 'LLY',
   'V', 'MA', 'UNH', 'XOM', 'COST', 'WMT', 'JNJ', 'PG', 'HD', 'NFLX', 'ORCL', 'BAC', 'KO', 'PEP',
   'ABBV', 'CVX', 'MRK', 'ADBE', 'CRM', 'AMD', 'DIS', 'MCD', 'CSCO', 'INTC', 'QCOM', 'IBM',

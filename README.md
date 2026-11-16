@@ -24,8 +24,15 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Recharts**.
 - **Import from Fidelity**: load your Positions CSV export to see holdings, actual
   allocation, and drift from your target. Projections start from your real balance.
   The file is parsed in your browser and never uploaded.
+- **Nightly price updates**: after each US market close, a scheduled job fetches closing
+  prices (Yahoo Finance's free, unofficial feed) and publishes `prices.json` with the
+  site. When you open the app, your imported share counts are revalued at the latest
+  closes and a value-per-trading-day history is filled in. Only the ticker list is
+  published, mixed into ~60 common stocks and funds; your amounts never leave your
+  browser. Add other tickers in `portfolio/tickers.txt`. Re-import after trades or
+  dividend reinvestment, since share counts come from your last import.
 - **Portfolio history**: each import saves a dated snapshot, charted against cost basis
-  (what you paid in).
+  (what you paid in), and nightly prices add one point per trading day.
 - A short **risk-tolerance questionnaire** (conservative / moderate / aggressive).
 - A suggested **asset allocation** (stocks / bonds / cash) based on your answers,
   or explore any profile manually.

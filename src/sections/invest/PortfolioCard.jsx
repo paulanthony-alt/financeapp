@@ -6,11 +6,20 @@ import { ASSET_CLASSES, parseFidelityPositions } from '../../lib/fidelity.js'
 import { ALLOCATION_COLORS } from '../../lib/constants.js'
 import { money, moneyCents, percent, prettyDate } from '../../lib/format.js'
 import { UploadIcon, TrashIcon } from '../../components/Icons.jsx'
+import { useLocalStorage } from '../../hooks/useLocalStorage.js'
+import { dayChange } from '../../lib/prices.js'
+import { todayISO } from '../../lib/format.js'
 
 export default function PortfolioCard({ portfolio, summary, profile, onImport, onClear, onOverride }) {
   const inputRef = useRef(null)
   const [error, setError] = useState('')
   const [confirmClear, setConfirmClear] = useState(false)
+  const [priceStatus] = useLocalStorage('fp:prices:status', null)
+  const asOf = portfolio?.pricesAsOf
+  const today = todayISO()
+  const move = portfolio ? dayChange(portfolio.holdings) : null
+  const stale = asOf && (Date.parse(today) - Date.parse(asOf)) / 86400000 > 5
+  const missing = (priceStatus?.missing || []).filter((s) => portfolio?.holdings.some((h) => h.symbol === s))
 
   const handleFile = async (e) => {
     const file = e.target.files?.[0]
@@ -52,7 +61,8 @@ export default function PortfolioCard({ portfolio, summary, profile, onImport, o
         title="Your Fidelity portfolio"
         subtitle={
           portfolio
-            ? `Imported ${prettyDate(portfolio.importedAt.slice(0, 10))} · ${portfolio.fileName}`
+            ? (asOf ? `Prices as of ${prettyDate(asOf)} close · ` : '') +
+              `Imported ${prettyDate(portfolio.importedAt.slice(0, 10))} · ${portfolio.fileName}`
             : 'Import your positions to base projections on your real balance'
         }
         action={
@@ -107,7 +117,12 @@ export default function PortfolioCard({ portfolio, summary, profile, onImport, o
         <div className="grid gap-6 lg:grid-cols-5">
           <div className="min-w-0 lg:col-span-2">
             <div className="grid grid-cols-2 gap-3">
-              <MiniStat label="Total value" value={money(summary.total)} />
+              <MiniStat
+                label="Total value"
+                value={money(summary.total)}
+                sub={move ? `${move.change >= 0 ? '+' : '−'}${moneyCents(Math.abs(move.change))} (${move.change >= 0 ? '+' : '−'}${percent(Math.abs(move.pct))}) last day` : null}
+                tone={move ? (move.change >= 0 ? 'text-brand-700' : 'text-red-700') : undefined}
+              />
               <MiniStat
                 label="Holdings"
                 value={summary.rows.length}
@@ -131,7 +146,15 @@ export default function PortfolioCard({ portfolio, summary, profile, onImport, o
                     <p className="text-sm font-semibold tabular-nums text-slate-800">
                       {moneyCents(h.value)}
                     </p>
-                    <p className="text-xs tabular-nums text-slate-400">{percent(h.weight)}</p>
+                    <p className="text-xs tabular-nums text-slate-400">
+                      {h.prevClose != null && h.price != null && (
+                        <span className={`mr-1.5 font-semibold ${h.price >= h.prevClose ? 'text-brand-700' : 'text-red-700'}`}>
+                          {h.price >= h.prevClose ? '+' : '−'}
+                          {percent(Math.abs(h.price / h.prevClose - 1))}
+                        </span>
+                      )}
+                      {percent(h.weight)}
+                    </p>
                   </div>
                   <select
                     className="input w-24 shrink-0 px-2 py-1 text-xs"
@@ -149,8 +172,21 @@ export default function PortfolioCard({ portfolio, summary, profile, onImport, o
               ))}
             </ul>
             <p className="mt-2 text-xs text-slate-400">
+              {asOf
+                ? 'Values update each evening from closing prices, using the share counts from your last import. Re-import after you buy, sell, or reinvest dividends. '
+                : 'Values are from your import; they start updating from daily closing prices after the next nightly price update. '}
               Asset classes are guessed from the fund name — correct any that are wrong.
             </p>
+            {stale && (
+              <p className="mt-2 border border-gold-300 bg-gold-50 p-2 text-xs text-slate-700">
+                Prices haven’t updated since {prettyDate(asOf)}. The nightly update may have failed; values may be out of date.
+              </p>
+            )}
+            {missing.length > 0 && (
+              <p className="mt-2 text-xs text-slate-500">
+                No daily price for {missing.join(', ')}; {missing.length === 1 ? 'its value stays' : 'their values stay'} at your last import.
+              </p>
+            )}
           </div>
         </div>
       )}
@@ -243,12 +279,12 @@ function DriftTable({ byClass, total, profile }) {
   )
 }
 
-function MiniStat({ label, value, sub }) {
+function MiniStat({ label, value, sub, tone = 'text-slate-400' }) {
   return (
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
       <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
       <p className="mt-1 text-lg font-extrabold tabular-nums text-slate-800">{value}</p>
-      {sub && <p className="text-xs text-slate-400">{sub}</p>}
+      {sub && <p className={`text-xs ${tone}`}>{sub}</p>}
     </div>
   )
 }
