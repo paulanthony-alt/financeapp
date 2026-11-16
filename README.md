@@ -10,6 +10,11 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Recharts**.
 
 ### 💰 Budgeting
 - Set your monthly income and per-category spending limits.
+- View one month at a time (previous months are one click away), with a
+  month-over-month spending chart.
+- **Recurring transactions** (rent, subscriptions) are added automatically each month;
+  deleting one occurrence skips just that month.
+- Move leftover budget into a savings goal straight from the Budget tab.
 - Add, edit, and delete transactions, each tagged to a category.
 - Visual spending breakdown with a **pie / bar** chart toggle (spent vs. limit).
 - Automatic **over-budget** alerts and highlighting when a category exceeds its limit.
@@ -19,6 +24,8 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Recharts**.
 - **Import from Fidelity**: load your Positions CSV export to see holdings, actual
   allocation, and drift from your target. Projections start from your real balance.
   The file is parsed in your browser and never uploaded.
+- **Portfolio history**: each import saves a dated snapshot, charted against cost basis
+  (what you paid in).
 - A short **risk-tolerance questionnaire** (conservative / moderate / aggressive).
 - A suggested **asset allocation** (stocks / bonds / cash) based on your answers,
   or explore any profile manually.
@@ -32,6 +39,16 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Recharts**.
 - Automatically calculated **required monthly savings** to hit each goal on time.
 - Quick-add buttons and custom contributions.
 
+### 🏦 Net worth
+- Track assets and debts, optionally including your imported Fidelity portfolio.
+- A snapshot is saved automatically as your numbers change, charted over time.
+
+### 🛟 Backup, offline, install
+- **Backup & restore**: download all your data as one JSON file and restore it in
+  another browser or device (the "Data" / "Backup & restore" button).
+- **Works offline and installs to your home screen** (production build): after the
+  first visit the whole app is cached.
+
 ## Tech
 
 - **React 18** + **Vite 5** — fast SPA tooling.
@@ -44,9 +61,12 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Recharts**.
 ```bash
 npm install      # install dependencies
 npm run dev      # start the dev server (http://localhost:5173)
+npm test         # unit and component tests
 npm run build    # production build into dist/
-npm run preview  # preview the production build
+npm run preview -- --base /financeapp/  # preview the production build
 ```
+
+Tests run on every pull request (`.github/workflows/ci.yml`) and before each deploy.
 
 ## Project structure
 

@@ -2,10 +2,13 @@ import { useMemo } from 'react'
 import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import { RISK_QUESTIONS, RISK_PROFILES, scoreToProfile } from '../../lib/constants.js'
 import { summarizePortfolio } from '../../lib/fidelity.js'
+import { upsertSnapshot, portfolioSnapshot } from '../../lib/history.js'
+import { todayISO } from '../../lib/format.js'
 import RiskQuestionnaire from './RiskQuestionnaire.jsx'
 import AllocationCard from './AllocationCard.jsx'
 import GrowthCalculator from './GrowthCalculator.jsx'
 import PortfolioCard from './PortfolioCard.jsx'
+import PortfolioHistory from './PortfolioHistory.jsx'
 import { AlertIcon } from '../../components/Icons.jsx'
 
 export default function InvestSection() {
@@ -16,6 +19,15 @@ export default function InvestSection() {
   // Imported Fidelity positions, plus user corrections to asset classes
   const [portfolio, setPortfolio] = useLocalStorage('fp:invest:portfolio', null)
   const [classOverrides, setClassOverrides] = useLocalStorage('fp:invest:classOverrides', {})
+
+  const [history, setHistory] = useLocalStorage('fp:invest:history', [])
+
+  // Each import also saves a dated snapshot for the history chart.
+  const importPortfolio = (next) => {
+    setPortfolio(next)
+    const snap = portfolioSnapshot(todayISO(), summarizePortfolio(next.holdings, classOverrides))
+    setHistory((h) => upsertSnapshot(h, snap))
+  }
 
   const summary = useMemo(
     () => (portfolio ? summarizePortfolio(portfolio.holdings, classOverrides) : null),
@@ -55,10 +67,14 @@ export default function InvestSection() {
         portfolio={portfolio}
         summary={summary}
         profile={profile}
-        onImport={setPortfolio}
+        onImport={importPortfolio}
         onClear={() => setPortfolio(null)}
         onOverride={(symbol, cls) => setClassOverrides((o) => ({ ...o, [symbol]: cls }))}
       />
+
+      {(portfolio || history.length > 0) && (
+        <PortfolioHistory history={history} onClear={() => setHistory([])} />
+      )}
 
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-3">

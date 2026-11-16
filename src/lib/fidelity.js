@@ -98,6 +98,7 @@ export function parseFidelityPositions(text) {
     quantity: findCol(header, 'quantity'),
     price: findCol(header, 'last price'),
     value: findCol(header, 'current value'),
+    costBasis: findCol(header, 'cost basis total'),
   }
 
   const bySymbol = new Map()
@@ -118,9 +119,16 @@ export function parseFidelityPositions(text) {
 
     const existing = bySymbol.get(symbol)
     const quantity = parseNumber(r[col.quantity]) || 0
+    // Cash has no cost basis column value; its basis is just its balance.
+    let cost = col.costBasis === -1 ? null : parseNumber(r[col.costBasis])
+    if (cost == null && coreCash) cost = value
     if (existing) {
       existing.value += value
       existing.quantity += quantity
+      if (cost != null) {
+        existing.costBasis = (existing.costBasis ?? 0) + cost
+        existing.costKnownValue += value
+      }
     } else {
       bySymbol.set(symbol, {
         symbol,
@@ -129,6 +137,8 @@ export function parseFidelityPositions(text) {
         price: parseNumber(r[col.price]),
         value,
         coreCash,
+        costBasis: cost,
+        costKnownValue: cost != null ? value : 0,
       })
     }
   }
@@ -190,9 +200,16 @@ export function summarizePortfolio(holdings, overrides = {}) {
   const byClass = Object.fromEntries(ASSET_CLASSES.map((c) => [c, 0]))
   for (const h of rows) byClass[h.cls] += h.value
 
+  // Cost basis is only trustworthy when most of the portfolio reports it.
+  const known = rows.reduce((sum, h) => sum + (h.costKnownValue || 0), 0)
+  const costBasis = rows.reduce((sum, h) => sum + (h.costBasis || 0), 0)
+  const costCoverage = total > 0 ? known / total : 0
+
   return {
     total,
     byClass,
+    costBasis: costCoverage >= 0.9 ? costBasis : null,
+    costCoverage,
     rows: rows
       .map((h) => ({ ...h, weight: total > 0 ? h.value / total : 0 }))
       .sort((a, b) => b.value - a.value),
