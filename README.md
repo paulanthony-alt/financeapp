@@ -29,8 +29,16 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Recharts**.
 - A short **risk-tolerance questionnaire** (conservative / moderate / aggressive).
 - A suggested **asset allocation** (stocks / bonds / cash) based on your answers,
   or explore any profile manually.
-- A **compound-interest growth projection** with an interactive chart driven by
-  your starting amount, monthly contribution, time horizon, and expected return.
+- **Rebalance with new money**: enter your next contribution and see how much to put
+  in each asset class to move back toward your target, without selling (and so without
+  realizing taxable gains). Suggests which of your funds to add to.
+- **Fund costs and overlap**: yearly fees per fund, average expense ratio, growth lost
+  to fees over 25 years, cheaper equivalents, and warnings when funds double up (e.g.
+  an S&P 500 fund inside a total-market fund). Expense ratios come from a reference
+  table and can be edited.
+- A **growth projection** in today's dollars (adjustable inflation), with a range of
+  outcomes from 1,000 simulated markets, and a **retirement target**: the nest egg
+  your spending needs, when the typical path reaches it, and the odds by your horizon.
 - Clear **educational-only disclaimer** — not personalized financial advice.
 
 ### 🎯 Money goals
