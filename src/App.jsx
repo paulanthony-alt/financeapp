@@ -84,7 +84,7 @@ function Brand({ compact = false }) {
   )
 }
 
-// Gold monogram seal.
+// Gold monogram seal (squared).
 function Crest({ className = '' }) {
   return (
     <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
@@ -95,8 +95,8 @@ function Crest({ className = '' }) {
           <stop offset="1" stopColor="#a97a1f" />
         </linearGradient>
       </defs>
-      <circle cx="24" cy="24" r="22.5" fill="none" stroke="url(#crest-gold)" strokeWidth="1.5" />
-      <circle cx="24" cy="24" r="18.5" fill="#082c1c" stroke="url(#crest-gold)" strokeWidth="0.75" />
+      <rect x="1.5" y="1.5" width="45" height="45" fill="none" stroke="url(#crest-gold)" strokeWidth="1.5" />
+      <rect x="5.5" y="5.5" width="37" height="37" fill="#082c1c" stroke="url(#crest-gold)" strokeWidth="0.75" />
       <text
         x="24"
         y="31"
@@ -112,14 +112,11 @@ function Crest({ className = '' }) {
   )
 }
 
-// Subtle guilloché rings in the sidebar corner.
+// Thin gold edge on the sidebar.
 function SidebarOrnament() {
   return (
     <div aria-hidden="true">
       <div className="pointer-events-none absolute inset-y-0 right-0 w-px bg-gradient-to-b from-gold-400/40 via-gold-400/10 to-gold-400/40" />
-      <div className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full border border-gold-400/10" />
-      <div className="pointer-events-none absolute -bottom-16 -right-16 h-56 w-56 rounded-full border border-gold-400/10" />
-      <div className="pointer-events-none absolute -bottom-8 -right-8 h-40 w-40 rounded-full border border-gold-400/10" />
     </div>
   )
 }

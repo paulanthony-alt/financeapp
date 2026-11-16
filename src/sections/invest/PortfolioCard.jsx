@@ -183,7 +183,7 @@ function AllocationDonut({ byClass, total }) {
                 <Cell key={d.name} fill={ALLOCATION_COLORS[d.name]} />
               ))}
             </Pie>
-            <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 10, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => `${money(v)} (${percent(v / total)})`} />
+            <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 0, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => `${money(v)} (${percent(v / total)})`} />
           </PieChart>
         </ResponsiveContainer>
       </div>

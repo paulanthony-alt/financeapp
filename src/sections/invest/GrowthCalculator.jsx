@@ -148,7 +148,7 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
                   tickFormatter={(v) => (v >= 1000 ? `$${Math.round(v / 1000)}k` : `$${v}`)}
                 />
                 <Tooltip
-                  contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 10, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }}
+                  contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 0, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }}
                   formatter={(v, name) => [money(v), name]}
                   labelFormatter={(y) => `Year ${y}`}
                 />

@@ -82,7 +82,7 @@ export default function SpendingChart({ categories, spentByCategory }) {
                   <Cell key={d.name} fill={d.color} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 10, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => money(v)} />
+              <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 0, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => money(v)} />
               <Legend
                 iconType="circle"
                 wrapperStyle={{ fontSize: 12 }}
@@ -105,10 +105,10 @@ export default function SpendingChart({ categories, spentByCategory }) {
                 height={50}
               />
               <YAxis tick={{ fontSize: 11, fill: '#7d6c4c' }} tickFormatter={(v) => `$${v}`} />
-              <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 10, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => money(v)} cursor={{ fill: '#f8eed3' }} />
+              <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 0, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => money(v)} cursor={{ fill: '#f8eed3' }} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Bar dataKey="limit" name="Limit" fill="#d9c38a" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="spent" name="Spent" radius={[4, 4, 0, 0]}>
+              <Bar dataKey="limit" name="Limit" fill="#d9c38a" radius={0} />
+              <Bar dataKey="spent" name="Spent" radius={0}>
                 {data.map((d) => (
                   <Cell key={d.name} fill={d.spent > d.limit && d.limit > 0 ? '#b91c1c' : d.color} />
                 ))}
