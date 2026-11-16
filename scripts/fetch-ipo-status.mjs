@@ -14,8 +14,14 @@ const names = [
   ...parseWatchlistFile(existsSync('portfolio/ipo-watchlist.txt') ? readFileSync('portfolio/ipo-watchlist.txt', 'utf8') : ''),
   ...(process.env.IPO_EXTRA || '').split(',').map((s) => s.trim()).filter(Boolean),
 ]
-// The SEC asks automated tools to identify themselves and stay under 10 requests/second.
-const SEC_HEADERS = { 'User-Agent': 'FinPilot personal finance app paulanthony-alt@users.noreply.github.com', Accept: 'application/json' }
+// The SEC requires automated tools to declare themselves with a contact email in
+// the User-Agent and to stay under 10 requests/second; undeclared tools get 403.
+// SEC_CONTACT comes from the repository variable of the same name.
+const contact = process.env.SEC_CONTACT
+if (!contact) {
+  console.log('::warning::SEC_CONTACT is not set (repository variable); skipping the IPO check and keeping last night’s results.')
+}
+const SEC_HEADERS = { 'User-Agent': `FinPilot personal finance app ${contact}`, Accept: 'application/json' }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms))
 
 async function getJson(url, headers = SEC_HEADERS) {
@@ -84,7 +90,7 @@ async function previousStatus() {
 
 const fresh = {}
 const failed = []
-for (const name of names) {
+for (const name of contact ? names : []) {
   try {
     fresh[normalizeCompany(name)] = await checkCompany(name)
   } catch (err) {
