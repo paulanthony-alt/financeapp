@@ -10,6 +10,7 @@ const BudgetSection = lazy(() => import('./sections/budget/BudgetSection.jsx'))
 const InvestSection = lazy(() => import('./sections/invest/InvestSection.jsx'))
 const GoalsSection = lazy(() => import('./sections/goals/GoalsSection.jsx'))
 const NetWorthSection = lazy(() => import('./sections/networth/NetWorthSection.jsx'))
+const IpoSection = lazy(() => import('./sections/ipo/IpoSection.jsx'))
 
 export default function App() {
   const [active, setActive] = useLocalStorage('fp:activeTab', 'budget')
@@ -66,6 +67,7 @@ export default function App() {
             {current.id === 'invest' && <InvestSection />}
             {current.id === 'goals' && <GoalsSection />}
             {current.id === 'networth' && <NetWorthSection />}
+            {current.id === 'ipo' && <IpoSection />}
           </Suspense>
         </main>
       </div>
@@ -84,6 +86,8 @@ function sectionSubtitle(id) {
       return 'Build toward each savings goal and stay on pace to reach it.'
     case 'networth':
       return 'Everything you own minus everything you owe, tracked over time.'
+    case 'ipo':
+      return 'Follow private companies on their way to going public.'
     default:
       return ''
   }

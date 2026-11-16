@@ -23,6 +23,7 @@ describe('app shell', () => {
       ['Investing', 'Investing'],
       ['Goals', 'Goals'],
       ['Net worth', 'Net worth'],
+      ['IPO watch', 'IPO watch'],
       ['Budget', 'Budget'],
     ]) {
       fireEvent.click(screen.getAllByRole('button', { name: new RegExp(tab) })[0])
@@ -167,5 +168,50 @@ describe('backup and restore', () => {
     fireEvent.change(await screen.findByLabelText('Backup file'), { target: { files: [file] } })
     expect((await screen.findAllByText(/not a FinPilot backup/))[0]).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Replace my data' })).toBeNull()
+  })
+})
+
+describe('IPO watch', () => {
+  it('starts with Anthropic, adds companies, rejects duplicates', async () => {
+    store.set('fp:activeTab', 'ipo')
+    render(<App />)
+    expect(await screen.findByRole('heading', { level: 3, name: 'Anthropic' })).toBeTruthy()
+
+    const input = screen.getByLabelText('Add a company to watch')
+    fireEvent.change(input, { target: { value: 'Stripe' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Watch' }))
+    expect(await screen.findByRole('heading', { level: 3, name: 'Stripe' })).toBeTruthy()
+
+    fireEvent.change(input, { target: { value: 'anthropic' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Watch' }))
+    expect(screen.getByRole('alert').textContent).toMatch(/already on your list/)
+    expect(store.get('fp:ipo:watchlist')).toHaveLength(2)
+  })
+
+  it('records stage changes with history and flags companies close to listing', async () => {
+    store.set('fp:activeTab', 'ipo')
+    render(<App />)
+    const card = (await screen.findByRole('heading', { level: 3, name: 'Anthropic' })).closest('.card')
+    fireEvent.change(within(card).getByLabelText('Stage'), { target: { value: 'filed' } })
+    await waitFor(() => {
+      const [co] = store.get('fp:ipo:watchlist')
+      expect(co.stage).toBe('filed')
+      expect(co.history.map((h) => h.stage)).toEqual(['watching', 'filed'])
+    })
+    expect(within(card).getByText('Filed publicly', { selector: 'p' })).toBeTruthy()
+    const closeStat = screen.getByText('Filed / close').closest('.card')
+    expect(within(closeStat).getByText('1')).toBeTruthy()
+  })
+
+  it('links to SEC filings and news, and removes after confirming', async () => {
+    store.set('fp:activeTab', 'ipo')
+    render(<App />)
+    const card = (await screen.findByRole('heading', { level: 3, name: 'Anthropic' })).closest('.card')
+    expect(within(card).getByRole('link', { name: /SEC filings/ }).getAttribute('href')).toContain('sec.gov/edgar/search')
+    expect(within(card).getByRole('link', { name: /IPO news/ }).getAttribute('rel')).toContain('noopener')
+    fireEvent.click(within(card).getByRole('button', { name: 'Stop watching Anthropic' }))
+    fireEvent.click(within(card).getByRole('button', { name: 'Remove' }))
+    await waitFor(() => expect(store.get('fp:ipo:watchlist')).toEqual([]))
+    expect(await screen.findByText('No companies yet')).toBeTruthy()
   })
 })

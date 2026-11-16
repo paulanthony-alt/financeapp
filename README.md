@@ -51,6 +51,13 @@ Built with **React**, **Vite**, **Tailwind CSS**, and **Recharts**.
 - Track assets and debts, optionally including your imported Fidelity portfolio.
 - A snapshot is saved automatically as your numbers change, charted over time.
 
+### 🔔 IPO watch
+- Keep a list of private companies (starts with Anthropic) and track each one's stage
+  on the way to listing: reported plans, filed confidentially, filed publicly (S-1),
+  price range set, priced, trading, or withdrawn. Changes are dated.
+- Each company links to its SEC EDGAR filings and IPO news. A scheduled check reports
+  new IPO steps each weekday; the app itself doesn't fetch live data.
+
 ### 🛟 Backup, offline, install
 - **Backup & restore**: download all your data as one JSON file and restore it in
   another browser or device (the "Data" / "Backup & restore" button).
