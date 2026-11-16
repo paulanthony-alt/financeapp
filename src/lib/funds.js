@@ -36,6 +36,24 @@ export const FUNDS = {
   QQQM: { name: 'Invesco Nasdaq 100 ETF', er: 0.15, tracks: 'nasdaq100' },
 }
 
+// Large companies that are long-standing S&P 500 members (so also in total-market
+// funds). Used to spot owning a stock directly and again through an index fund.
+const SP500_GIANTS = new Set([
+  'AAPL', 'MSFT', 'NVDA', 'AMZN', 'GOOGL', 'GOOG', 'META', 'TSLA', 'BRK.B', 'AVGO', 'JPM', 'LLY',
+  'V', 'MA', 'UNH', 'XOM', 'COST', 'WMT', 'JNJ', 'PG', 'HD', 'NFLX', 'ORCL', 'BAC', 'KO', 'PEP',
+  'ABBV', 'CVX', 'MRK', 'ADBE', 'CRM', 'AMD', 'DIS', 'MCD', 'CSCO', 'INTC', 'QCOM', 'IBM',
+])
+
+const FUND_WORDS = /\b(FUND|INDEX|ETF|TRUST|PORTFOLIO|MONEY MARKET|FREEDOM|SPDR|ISHARES|VANGUARD|SHARES)\b/
+const COMPANY_WORDS = /\b(INC|CORP|CORPORATION|CO|COM|LTD|PLC|HOLDINGS|PLATFORMS|GROUP|CL [A-C]|CLASS [A-C])\b/
+
+/** A company's own shares (not a fund), judged from the symbol and Fidelity's description. */
+export function isIndividualStock({ symbol = '', description = '' }) {
+  if (FUNDS[symbol]) return false
+  const desc = description.toUpperCase()
+  return /^[A-Z]{1,5}(\.[A-Z])?$/.test(symbol) && !FUND_WORDS.test(desc) && COMPANY_WORDS.test(desc)
+}
+
 const LABEL = {
   sp500: 'the S&P 500',
   'us-total': 'the total US stock market',
@@ -46,10 +64,14 @@ const LABEL = {
   nasdaq100: 'the Nasdaq-100',
 }
 
-/** Expense ratio (%) for a holding: user override, then the table, else null. */
-export function expenseRatio(symbol, overrides = {}) {
+/** Expense ratio (%) for a holding: user override, then the table, 0 for an
+ *  individual stock (no fund fee), else null. Accepts a symbol or a holding row. */
+export function expenseRatio(holding, overrides = {}) {
+  const row = typeof holding === 'string' ? { symbol: holding } : holding
+  const { symbol } = row
   if (overrides[symbol] != null && overrides[symbol] !== '') return Number(overrides[symbol])
-  return FUNDS[symbol]?.er ?? null
+  if (FUNDS[symbol]) return FUNDS[symbol].er
+  return isIndividualStock(row) ? 0 : null
 }
 
 /**
@@ -62,7 +84,7 @@ export function fundCosts(rows, overrides = {}) {
   let knownValue = 0
   const total = rows.reduce((s, r) => s + r.value, 0)
   const out = rows.map((r) => {
-    const er = expenseRatio(r.symbol, overrides)
+    const er = expenseRatio(r, overrides)
     const cost = er == null ? null : (r.value * er) / 100
     if (cost != null) {
       yearly += cost
@@ -74,7 +96,14 @@ export function fundCosts(rows, overrides = {}) {
       ...r,
       er,
       cost,
-      source: overrides[r.symbol] != null && overrides[r.symbol] !== '' ? 'you' : ref ? 'table' : null,
+      source:
+        overrides[r.symbol] != null && overrides[r.symbol] !== ''
+          ? 'you'
+          : ref
+            ? 'table'
+            : isIndividualStock(r)
+              ? 'stock'
+              : null,
       cheaper: cheaper && er != null && er - cheaper.er >= 0.1 ? cheaper : null,
     }
   })
@@ -92,7 +121,12 @@ export function feeDrag(balance, ratePct, erPct, years, monthly = 0) {
   return futureValue(balance, monthly, ratePct, years) - futureValue(balance, monthly, ratePct - erPct, years)
 }
 
-/** Overlap warnings between holdings, from what each fund tracks. */
+function joinList(items) {
+  if (items.length <= 2) return items.join(' and ')
+  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`
+}
+
+/** Overlap and concentration warnings between holdings. Rows need { symbol, description, value }. */
 export function overlapWarnings(rows) {
   const tracked = rows
     .map((r) => ({ symbol: r.symbol, tracks: FUNDS[r.symbol]?.tracks }))
@@ -127,6 +161,33 @@ export function overlapWarnings(rows) {
       text: `The Nasdaq-100 companies in ${list('nasdaq100')} are already in ${broad.join(' and ')}, so holding both tilts you further toward the largest tech companies.`,
     })
   }
+  // Individual stocks also owned through a broad index fund.
+  const broadFunds = [...(by.sp500 || []), ...(by['us-total'] || []), ...(by['us-large'] || [])]
+  const doubled = rows.filter((r) => SP500_GIANTS.has(r.symbol)).map((r) => r.symbol)
+  if (broadFunds.length && doubled.length) {
+    out.push({
+      kind: 'in-index',
+      symbols: [...doubled, ...broadFunds],
+      text: `${joinList(doubled)} ${doubled.length === 1 ? 'is' : 'are'} also among the largest companies inside ${joinList(broadFunds)}, so you own ${doubled.length === 1 ? 'it' : 'them'} twice: directly and through the fund.`,
+    })
+  }
+
+  // Concentration in individual companies.
+  const total = rows.reduce((sum, r) => sum + (r.value || 0), 0)
+  const stocks = rows.filter((r) => isIndividualStock(r))
+  const stockShare = total > 0 ? stocks.reduce((sum, r) => sum + r.value, 0) / total : 0
+  if (stocks.length && stockShare >= 0.25) {
+    const big = stocks.filter((r) => r.value / total >= 0.1).map((r) => `${r.symbol} ${Math.round((r.value / total) * 100)}%`)
+    out.push({
+      kind: 'single-stocks',
+      symbols: stocks.map((r) => r.symbol),
+      text:
+        `${Math.round(stockShare * 100)}% of this portfolio is in ${stocks.length} individual ${stocks.length === 1 ? 'company' : 'companies'}. ` +
+        (big.length ? `Positions over 10%: ${big.join(', ')}. ` : '') +
+        'A single company can fall much further, and stay down much longer, than the market as a whole.',
+    })
+  }
+
   if (has('target-date') && tracked.some((r) => r.tracks !== 'target-date')) {
     out.push({
       kind: 'target-date',

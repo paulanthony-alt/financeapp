@@ -59,7 +59,7 @@ describe('fund costs and overlap', () => {
     expect(within(card).getByText(/roughly 80% of the US market/)).toBeTruthy()
     expect(within(card).getByText(/target-date fund, built to be a whole portfolio/)).toBeTruthy()
     expect(within(card).getByText(/Freedom Index 2050 \(FIPFX\)/)).toBeTruthy()
-    expect(within(card).getByText(/86% of portfolio has a known cost/)).toBeTruthy()
+    expect(within(card).getByText(/85% of portfolio has a known cost/)).toBeTruthy()
 
     fireEvent.change(within(card).getByLabelText('Expense ratio for MYSTERY'), { target: { value: '0.5' } })
     await waitFor(() => expect(store.get('fp:invest:erOverrides')).toEqual({ MYSTERY: 0.5 }))

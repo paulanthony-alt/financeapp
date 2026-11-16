@@ -25,10 +25,10 @@ export default function FundCostsCard({ summary, profile }) {
 
   return (
     <Card>
-      <CardHeader title="Fund costs and overlap" subtitle="What your funds charge each year, and where they double up" />
+      <CardHeader title="Fund costs and overlap" subtitle="What your funds charge each year, where they double up, and how concentrated you are" />
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <Mini label="Yearly fees" value={moneyCents(costs.yearly)} sub={costs.coverage < 0.999 ? `${Math.round(costs.coverage * 100)}% of portfolio has a known cost` : null} />
+        <Mini label="Yearly fees" value={moneyCents(costs.yearly)} sub={costs.coverage < 1 ? `${Math.floor(costs.coverage * 100)}% of portfolio has a known cost` : null} />
         <Mini label="Average expense ratio" value={costs.weightedEr != null ? `${costs.weightedEr.toFixed(3)}%` : '—'} sub="weighted by value" />
         <Mini
           label={`Growth lost over ${DRAG_YEARS} yrs`}
@@ -86,7 +86,13 @@ export default function FundCostsCard({ summary, profile }) {
                     <span className="text-slate-500">%</span>
                   </div>
                   <p className="mt-0.5 text-[11px] text-slate-400">
-                    {r.source === 'you' ? 'entered by you' : r.source === 'table' ? 'reference table' : 'enter from fund page'}
+                    {r.source === 'you'
+                      ? 'entered by you'
+                      : r.source === 'table'
+                        ? 'reference table'
+                        : r.source === 'stock'
+                          ? 'individual stock, no fund fee'
+                          : 'enter from fund page'}
                   </p>
                 </td>
                 <td className="py-2.5 text-right tabular-nums text-slate-800">{r.cost != null ? moneyCents(r.cost) : '—'}</td>
