@@ -41,12 +41,12 @@ export default function SpendingChart({ categories, spentByCategory }) {
       <CardHeader
         title="Spending breakdown"
         action={
-          <div className="flex rounded-lg bg-slate-100 p-0.5 text-xs font-semibold">
+          <div className="flex bg-slate-100 p-0.5 text-xs font-semibold">
             {['pie', 'bar'].map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className={`rounded-md px-2.5 py-1 capitalize transition ${
+                className={`rounded-none px-2.5 py-1 capitalize transition ${
                   mode === m ? 'bg-white text-brand-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500'
                 }`}
               >

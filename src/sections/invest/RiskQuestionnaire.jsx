@@ -43,7 +43,7 @@ export default function RiskQuestionnaire({ questions, answers, onAnswer, onRese
                   <button
                     key={oi}
                     onClick={() => onAnswer(q.id, oi)}
-                    className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-left text-sm font-medium transition ${
+                    className={`flex items-center justify-between gap-2 rounded-none border px-3 py-2.5 text-left text-sm font-medium transition ${
                       selected
                         ? 'border-brand-600 bg-brand-50 text-brand-800 ring-1 ring-brand-600'
                         : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'

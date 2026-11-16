@@ -88,14 +88,14 @@ export default function TransactionList({ transactions, categories, onAdd, onEdi
                 </span>
                 <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-hover:opacity-100">
                   <button
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand-600"
+                    className="rounded-none p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand-600"
                     onClick={() => onEdit(t)}
                     aria-label="Edit transaction"
                   >
                     <EditIcon width={16} height={16} />
                   </button>
                   <button
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
+                    className="rounded-none p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
                     onClick={() => onDelete(t.id)}
                     aria-label="Delete transaction"
                   >
@@ -115,7 +115,7 @@ function FilterChip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`chip border transition ${
+      className={`chip rounded-none border transition ${
         active
           ? 'border-brand-700 bg-brand-700 text-white'
           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'

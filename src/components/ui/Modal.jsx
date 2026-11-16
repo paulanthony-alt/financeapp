@@ -26,7 +26,7 @@ export function Modal({ open, onClose, title, children }) {
           <h3 className="font-display text-xl font-semibold text-slate-900">{title}</h3>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+            className="rounded-none p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
             aria-label="Close"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

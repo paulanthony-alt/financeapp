@@ -46,14 +46,14 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
         </div>
         <div className="flex shrink-0 gap-1">
           <button
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand-600"
+            className="rounded-none p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand-600"
             onClick={onEdit}
             aria-label="Edit goal"
           >
             <EditIcon width={16} height={16} />
           </button>
           <button
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
+            className="rounded-none p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
             onClick={() => setConfirmDelete(true)}
             aria-label="Delete goal"
           >
@@ -103,7 +103,7 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
               <button
                 key={amt}
                 onClick={() => onContribute(amt)}
-                className="chip border border-gold-300 bg-gold-50 text-gold-900 transition hover:border-gold-500 hover:bg-gold-100"
+                className="chip rounded-none border border-gold-300 bg-gold-50 text-gold-900 transition hover:border-gold-500 hover:bg-gold-100"
               >
                 +${amt}
               </button>

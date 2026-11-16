@@ -85,7 +85,7 @@ export default function AllocationCard({ profile, complete, activeProfileId, onP
             <button
               key={p.id}
               onClick={() => onPick(p.id)}
-              className={`flex-1 rounded-lg border px-2 py-1.5 text-xs font-semibold capitalize transition ${
+              className={`flex-1 rounded-none border px-2 py-1.5 text-xs font-semibold capitalize transition ${
                 activeProfileId === p.id
                   ? 'border-brand-600 bg-brand-50 text-brand-800 ring-1 ring-brand-600'
                   : 'border-slate-200 text-slate-500 hover:border-slate-300'
