@@ -56,7 +56,7 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
         {/* Inputs */}
         <div className="space-y-4 lg:col-span-2">
           {portfolioValue != null && (
-            <label className="flex items-center gap-2 rounded-xl border-2 border-ink bg-brand-50 p-3 text-sm font-semibold text-brand-800 shadow-comic-sm">
+            <label className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 p-3 text-sm font-semibold text-brand-800">
               <input
                 type="checkbox"
                 className="h-4 w-4 accent-gold-600"
@@ -148,7 +148,7 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
                   tickFormatter={(v) => (v >= 1000 ? `$${Math.round(v / 1000)}k` : `$${v}`)}
                 />
                 <Tooltip
-                  contentStyle={{ background: '#fffdf5', border: '2px solid #2f271d', borderRadius: 12, boxShadow: '3px 3px 0 #2f271d', fontWeight: 600 }}
+                  contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 10, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }}
                   formatter={(v, name) => [money(v), name]}
                   labelFormatter={(y) => `Year ${y}`}
                 />
@@ -212,7 +212,7 @@ function MiniStat({ label, value, accent }) {
     brand: 'text-brand-600',
   }
   return (
-    <div className="rounded-xl border-2 border-slate-300 bg-slate-50 p-3">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
       <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
       <p className={`mt-1 text-lg font-extrabold tabular-nums ${colors[accent]}`}>{value}</p>
     </div>

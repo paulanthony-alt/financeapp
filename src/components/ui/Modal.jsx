@@ -21,12 +21,12 @@ export function Modal({ open, onClose, title, children }) {
         className="absolute inset-0 bg-vault/60 backdrop-blur-sm"
         onClick={onClose}
       />
-      <div className="relative w-full sm:max-w-lg bg-slate-50 rounded-t-2xl sm:rounded-2xl border-2 border-ink shadow-comic-lg max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 z-10 flex items-center justify-between border-b-2 border-ink bg-money px-5 py-3.5">
-          <h3 className="title-gold text-2xl">{title}</h3>
+      <div className="relative w-full sm:max-w-lg bg-white rounded-t-2xl sm:rounded-2xl border border-slate-200 shadow-lift max-h-[90vh] overflow-y-auto">
+        <div className="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
+          <h3 className="font-display text-xl font-semibold text-slate-900">{title}</h3>
           <button
             onClick={onClose}
-            className="rounded-full border-2 border-ink bg-gold p-1 text-ink shadow-comic-sm hover:brightness-105"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700"
             aria-label="Close"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

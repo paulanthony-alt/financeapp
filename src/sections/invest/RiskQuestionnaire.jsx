@@ -19,9 +19,9 @@ export default function RiskQuestionnaire({ questions, answers, onAnswer, onRese
       />
 
       <div className="mb-5 flex items-center gap-3">
-        <div className="h-3 flex-1 overflow-hidden rounded-full border-2 border-ink bg-slate-100">
+        <div className="h-3 flex-1 overflow-hidden rounded-full bg-slate-200">
           <div
-            className="h-full rounded-full bg-gold transition-all duration-500"
+            className="h-full rounded-full bg-brand-600 transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -45,7 +45,7 @@ export default function RiskQuestionnaire({ questions, answers, onAnswer, onRese
                     onClick={() => onAnswer(q.id, oi)}
                     className={`flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 text-left text-sm font-medium transition ${
                       selected
-                        ? 'border-ink bg-gold-100 text-ink shadow-comic-sm'
+                        ? 'border-brand-600 bg-brand-50 text-brand-800 ring-1 ring-brand-600'
                         : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >

@@ -117,7 +117,7 @@ function FilterChip({ active, onClick, children }) {
       onClick={onClick}
       className={`chip border transition ${
         active
-          ? 'border-ink bg-gold text-ink shadow-comic-sm'
+          ? 'border-brand-700 bg-brand-700 text-white'
           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
       }`}
     >

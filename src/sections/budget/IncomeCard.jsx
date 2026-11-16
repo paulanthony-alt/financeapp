@@ -56,7 +56,7 @@ export default function IncomeCard({ income, onChange, totalBudget }) {
         </div>
         <div className="text-right">
           <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Budgeted</p>
-          <p className="font-display text-2xl tracking-wide text-slate-800">
+          <p className="font-display text-2xl font-semibold text-slate-800">
             {money(totalBudget)}{' '}
             <span className="text-sm font-medium text-slate-400">of income</span>
           </p>

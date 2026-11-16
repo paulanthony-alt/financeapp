@@ -112,7 +112,7 @@ export default function GoalModal({ open, editing, onClose, onSave }) {
         </div>
 
         {preview != null && (
-          <div className="rounded-xl border-2 border-ink bg-brand-50 p-3 text-sm font-semibold text-brand-800 shadow-comic-sm">
+          <div className="rounded-xl border border-brand-200 bg-brand-50 p-3 text-sm font-semibold text-brand-800">
             You’d need to save{' '}
             <span className="font-bold">{money(preview)}/month</span> to reach this goal on time.
           </div>

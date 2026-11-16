@@ -47,7 +47,7 @@ export default function SpendingChart({ categories, spentByCategory }) {
                 key={m}
                 onClick={() => setMode(m)}
                 className={`rounded-md px-2.5 py-1 capitalize transition ${
-                  mode === m ? 'border-2 border-ink bg-gold text-ink shadow-comic-sm' : 'border-2 border-transparent text-slate-500'
+                  mode === m ? 'bg-white text-brand-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500'
                 }`}
               >
                 {m}
@@ -82,7 +82,7 @@ export default function SpendingChart({ categories, spentByCategory }) {
                   <Cell key={d.name} fill={d.color} />
                 ))}
               </Pie>
-              <Tooltip contentStyle={{ background: '#fffdf5', border: '2px solid #2f271d', borderRadius: 12, boxShadow: '3px 3px 0 #2f271d', fontWeight: 600 }} formatter={(v) => money(v)} />
+              <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 10, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => money(v)} />
               <Legend
                 iconType="circle"
                 wrapperStyle={{ fontSize: 12 }}
@@ -105,7 +105,7 @@ export default function SpendingChart({ categories, spentByCategory }) {
                 height={50}
               />
               <YAxis tick={{ fontSize: 11, fill: '#7d6c4c' }} tickFormatter={(v) => `$${v}`} />
-              <Tooltip contentStyle={{ background: '#fffdf5', border: '2px solid #2f271d', borderRadius: 12, boxShadow: '3px 3px 0 #2f271d', fontWeight: 600 }} formatter={(v) => money(v)} cursor={{ fill: '#f8eed3' }} />
+              <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 10, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => money(v)} cursor={{ fill: '#f8eed3' }} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <Bar dataKey="limit" name="Limit" fill="#d9c38a" radius={[4, 4, 0, 0]} />
               <Bar dataKey="spent" name="Spent" radius={[4, 4, 0, 0]}>

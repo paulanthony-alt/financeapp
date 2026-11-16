@@ -87,7 +87,7 @@ export default function InvestSection() {
 
 function Disclaimer() {
   return (
-    <div className="flex items-start gap-3 rounded-2xl border-2 border-ink bg-gold-50 p-4 text-slate-800 shadow-comic">
+    <div className="flex items-start gap-3 rounded-2xl border border-gold-300 bg-gold-50 p-4 text-slate-800">
       <AlertIcon width={20} height={20} className="mt-0.5 shrink-0" />
       <p className="text-sm leading-relaxed">
         <span className="font-semibold">Educational only — not financial advice.</span>{' '}

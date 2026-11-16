@@ -12,26 +12,25 @@ function NavItem({ tab, active, onClick }) {
     <button
       onClick={onClick}
       aria-current={active ? 'page' : undefined}
-      className={`group flex w-full items-center gap-3 rounded-xl border-2 px-3 py-2.5 text-left transition-all ${
-        active
-          ? 'translate-x-1 border-ink bg-gold text-ink shadow-comic'
-          : 'border-transparent text-brand-100 hover:border-gold-400/40 hover:bg-white/5'
+      className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition ${
+        active ? 'bg-white/[0.08] text-white' : 'text-brand-100/75 hover:bg-white/[0.04] hover:text-white'
       }`}
     >
+      {active && (
+        <span className="absolute inset-y-2 left-0 w-[3px] rounded-full bg-gold-400" aria-hidden="true" />
+      )}
       <span
-        className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 ${
+        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ring-1 transition ${
           active
-            ? 'border-ink bg-brand-700 text-gold-300'
-            : 'border-gold-500/50 bg-vault text-gold-300 group-hover:border-gold-400'
+            ? 'bg-gold-400/15 text-gold-300 ring-gold-400/40'
+            : 'bg-white/[0.04] text-brand-100/70 ring-white/10 group-hover:text-gold-300'
         }`}
       >
-        <Icon width={18} height={18} />
+        <Icon width={17} height={17} />
       </span>
       <span className="min-w-0">
-        <span className="block font-display text-lg leading-tight tracking-wide">{tab.label}</span>
-        <span
-          className={`block truncate text-xs font-semibold ${active ? 'text-ink/70' : 'text-brand-200/70'}`}
-        >
+        <span className="block text-sm font-semibold leading-tight">{tab.label}</span>
+        <span className={`block truncate text-xs ${active ? 'text-brand-100/70' : 'text-brand-100/50'}`}>
           {tab.desc}
         </span>
       </span>
@@ -57,7 +56,7 @@ export function Sidebar({ active, onSelect, className = '' }) {
 // Horizontal tab bar for mobile.
 export function TabBar({ active, onSelect }) {
   return (
-    <div className="flex gap-1.5 rounded-2xl border-2 border-ink bg-money p-1.5 shadow-comic">
+    <div className="flex gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-card">
       {TABS.map((tab) => {
         const Icon = tab.icon
         const isActive = active === tab.id
@@ -66,8 +65,8 @@ export function TabBar({ active, onSelect }) {
             key={tab.id}
             onClick={() => onSelect(tab.id)}
             aria-current={isActive ? 'page' : undefined}
-            className={`flex flex-1 items-center justify-center gap-2 rounded-xl border-2 px-2 py-2 font-display text-base tracking-wide transition ${
-              isActive ? 'border-ink bg-gold text-ink shadow-comic-sm' : 'border-transparent text-brand-100'
+            className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-2 py-2 text-sm font-semibold transition ${
+              isActive ? 'bg-brand-800 text-white shadow-sm' : 'text-slate-500'
             }`}
           >
             <Icon width={16} height={16} />
