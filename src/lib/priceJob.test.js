@@ -20,4 +20,9 @@ describe('price job', () => {
     expect(merged.AMZN).toEqual([['2026-11-16', 9]])
     expect(mergeWithPrevious({ X: [['a', 1], ['b', 2], ['c', 3]] }, null, 2).X).toEqual([['b', 2], ['c', 3]])
   })
+  it('drops old-file prices newer than tonight’s fresh data (mid-day leftovers)', () => {
+    const previous = { closes: { AMZN: [['2026-11-13', 266.66], ['2026-11-16', 261.75]] } }
+    const merged = mergeWithPrevious({ AMZN: [['2026-11-13', 266.66]] }, previous)
+    expect(merged.AMZN).toEqual([['2026-11-13', 266.66]])
+  })
 })

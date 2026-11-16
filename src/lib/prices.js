@@ -4,11 +4,15 @@
 import { summarizePortfolio } from './fidelity.js'
 import { portfolioSnapshot, upsertSnapshot } from './history.js'
 
+// US markets close at 4:00 pm; allow a little time for the official close.
+const CLOSE_MINUTES = 16 * 60 + 15
+
 /**
  * Yahoo Finance chart API response -> { symbol, series: [[date, close], ...] }.
- * Dates are the exchange's local trading date. Bars with no close are skipped.
+ * Dates are the exchange's local trading date. Bars with no close are skipped,
+ * and so is today's bar while the market is still open (it's not a close yet).
  */
-export function parseYahooChart(json) {
+export function parseYahooChart(json, now = Date.now()) {
   const r = json?.chart?.result?.[0]
   if (!r || !Array.isArray(r.timestamp)) throw new Error(json?.chart?.error?.description || 'no chart data')
   const offset = r.meta?.gmtoffset || 0
@@ -20,7 +24,12 @@ export function parseYahooChart(json) {
     const date = new Date((ts + offset) * 1000).toISOString().slice(0, 10)
     byDate.set(date, Math.round(c * 10000) / 10000) // last bar of a date wins
   })
-  return { symbol: r.meta?.symbol, series: [...byDate.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)) }
+  const series = [...byDate.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1))
+  const local = new Date(now + offset * 1000)
+  const localDate = local.toISOString().slice(0, 10)
+  const localMinutes = local.getUTCHours() * 60 + local.getUTCMinutes()
+  if (series.length && series[series.length - 1][0] === localDate && localMinutes < CLOSE_MINUTES) series.pop()
+  return { symbol: r.meta?.symbol, series }
 }
 
 /** Close on `date`, or the latest one before it. */
