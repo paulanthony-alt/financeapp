@@ -1,0 +1,3 @@
+# Companies the nightly job checks on SEC EDGAR, one per line.
+# Their names are published with the site (in ipo-status.json); amounts never are.
+Anthropic
