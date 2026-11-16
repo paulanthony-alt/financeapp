@@ -2,17 +2,17 @@
 
 // Categorical palette (color-blind friendly-ish, high contrast).
 export const PALETTE = [
-  '#4f46e5', // indigo
-  '#06b6d4', // cyan
-  '#f59e0b', // amber
-  '#ef4444', // red
-  '#10b981', // emerald
-  '#8b5cf6', // violet
-  '#ec4899', // pink
-  '#84cc16', // lime
-  '#f97316', // orange
-  '#14b8a6', // teal
-  '#64748b', // slate
+  '#157f49', // money green
+  '#f0b429', // gold
+  '#1d4ed8', // blue
+  '#b91c1c', // red
+  '#cb6e17', // copper
+  '#3dbb76', // mint
+  '#7c3aed', // purple
+  '#0f5132', // deep green
+  '#db2777', // pink
+  '#0f766e', // teal
+  '#7d6c4c', // ink brown
 ]
 
 // Starter categories used when the app is first opened.
@@ -75,7 +75,7 @@ export const RISK_PROFILES = {
       'Prioritizes stability and capital preservation. Lower expected returns, smaller swings.',
     assumedReturn: 4.5,
     allocation: { Stocks: 30, Bonds: 55, Cash: 15 },
-    color: '#0ea5e9',
+    color: '#1d4ed8',
   },
   moderate: {
     id: 'moderate',
@@ -84,7 +84,7 @@ export const RISK_PROFILES = {
       'A balanced mix aiming for steady growth while smoothing out some volatility.',
     assumedReturn: 6.5,
     allocation: { Stocks: 60, Bonds: 32, Cash: 8 },
-    color: '#4f46e5',
+    color: '#157f49',
   },
   aggressive: {
     id: 'aggressive',
@@ -93,15 +93,15 @@ export const RISK_PROFILES = {
       'Chases long-term growth and can tolerate big ups and downs along the way.',
     assumedReturn: 8.5,
     allocation: { Stocks: 85, Bonds: 12, Cash: 3 },
-    color: '#db2777',
+    color: '#de911d',
   },
 }
 
 export const ALLOCATION_COLORS = {
-  Stocks: '#4f46e5',
-  Bonds: '#06b6d4',
-  Cash: '#f59e0b',
-  Mixed: '#8b5cf6',
+  Stocks: '#157f49',
+  Bonds: '#f0b429',
+  Cash: '#7d6c4c',
+  Mixed: '#cb6e17',
 }
 
 /** Map a total questionnaire score to a risk profile id. Max score = 8. */

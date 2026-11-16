@@ -41,13 +41,13 @@ export default function SpendingChart({ categories, spentByCategory }) {
       <CardHeader
         title="Spending breakdown"
         action={
-          <div className="flex rounded-lg bg-slate-100 p-0.5 text-xs font-semibold">
+          <div className="flex bg-slate-100 p-0.5 text-xs font-semibold">
             {['pie', 'bar'].map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(m)}
-                className={`rounded-md px-2.5 py-1 capitalize transition ${
-                  mode === m ? 'bg-white text-brand-600 shadow-sm' : 'text-slate-500'
+                className={`rounded-none px-2.5 py-1 capitalize transition ${
+                  mode === m ? 'bg-white text-brand-800 shadow-sm ring-1 ring-slate-200' : 'text-slate-500'
                 }`}
               >
                 {m}
@@ -82,7 +82,7 @@ export default function SpendingChart({ categories, spentByCategory }) {
                   <Cell key={d.name} fill={d.color} />
                 ))}
               </Pie>
-              <Tooltip formatter={(v) => money(v)} />
+              <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 0, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => money(v)} />
               <Legend
                 iconType="circle"
                 wrapperStyle={{ fontSize: 12 }}
@@ -95,22 +95,22 @@ export default function SpendingChart({ categories, spentByCategory }) {
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={data} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ecdcaf" />
               <XAxis
                 dataKey="name"
-                tick={{ fontSize: 11, fill: '#64748b' }}
+                tick={{ fontSize: 11, fill: '#7d6c4c' }}
                 interval={0}
                 angle={-20}
                 textAnchor="end"
                 height={50}
               />
-              <YAxis tick={{ fontSize: 11, fill: '#64748b' }} tickFormatter={(v) => `$${v}`} />
-              <Tooltip formatter={(v) => money(v)} cursor={{ fill: '#f1f5f9' }} />
+              <YAxis tick={{ fontSize: 11, fill: '#7d6c4c' }} tickFormatter={(v) => `$${v}`} />
+              <Tooltip contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 0, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }} formatter={(v) => money(v)} cursor={{ fill: '#f8eed3' }} />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Bar dataKey="limit" name="Limit" fill="#cbd5e1" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="spent" name="Spent" radius={[4, 4, 0, 0]}>
+              <Bar dataKey="limit" name="Limit" fill="#d9c38a" radius={0} />
+              <Bar dataKey="spent" name="Spent" radius={0}>
                 {data.map((d) => (
-                  <Cell key={d.name} fill={d.spent > d.limit && d.limit > 0 ? '#ef4444' : d.color} />
+                  <Cell key={d.name} fill={d.spent > d.limit && d.limit > 0 ? '#b91c1c' : d.color} />
                 ))}
               </Bar>
             </BarChart>

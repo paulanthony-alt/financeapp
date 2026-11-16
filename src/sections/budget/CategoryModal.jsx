@@ -78,7 +78,7 @@ export default function CategoryModal({ open, categories, spentByCategory, onClo
                   onClick={() => removeRow(r.id)}
                   disabled={spent > 0}
                   title={spent > 0 ? `Has ${money(spent)} in transactions` : 'Remove'}
-                  className="rounded-lg p-2 text-slate-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:hover:bg-transparent"
+                  className="rounded-none p-2 text-slate-400 hover:bg-red-50 hover:text-red-600 disabled:opacity-30 disabled:hover:bg-transparent"
                   aria-label="Remove category"
                 >
                   <TrashIcon width={16} height={16} />

@@ -56,10 +56,10 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
         {/* Inputs */}
         <div className="space-y-4 lg:col-span-2">
           {portfolioValue != null && (
-            <label className="flex items-center gap-2 rounded-xl bg-brand-50 p-3 text-sm text-brand-700 ring-1 ring-brand-100">
+            <label className="flex items-center gap-2 rounded-xl border border-brand-200 bg-brand-50 p-3 text-sm font-semibold text-brand-800">
               <input
                 type="checkbox"
-                className="h-4 w-4 accent-brand-600"
+                className="h-4 w-4 accent-gold-600"
                 checked={fromPortfolio}
                 onChange={(e) => setCalc((c) => ({ ...c, useFidelity: e.target.checked }))}
               />
@@ -90,7 +90,7 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
               max="45"
               value={calc.years}
               onChange={update('years')}
-              className="mt-2 w-full accent-brand-600"
+              className="mt-2 w-full accent-gold-600"
             />
           </div>
           <div>
@@ -106,7 +106,7 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
               value={rate}
               onChange={update('rate')}
               disabled={!!profile}
-              className="mt-2 w-full accent-brand-600 disabled:opacity-50"
+              className="mt-2 w-full accent-gold-600 disabled:opacity-50"
             />
             {profile && (
               <p className="mt-1 text-xs text-slate-400">
@@ -129,25 +129,26 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
               <AreaChart data={series} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
                 <defs>
                   <linearGradient id="gBalance" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.35} />
-                    <stop offset="95%" stopColor="#4f46e5" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#157f49" stopOpacity={0.35} />
+                    <stop offset="95%" stopColor="#157f49" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="gInvested" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#94a3b8" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#94a3b8" stopOpacity={0} />
+                    <stop offset="5%" stopColor="#a8946a" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#a8946a" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#ecdcaf" />
                 <XAxis
                   dataKey="year"
-                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: '#7d6c4c' }}
                   tickFormatter={(y) => `${y}y`}
                 />
                 <YAxis
-                  tick={{ fontSize: 11, fill: '#64748b' }}
+                  tick={{ fontSize: 11, fill: '#7d6c4c' }}
                   tickFormatter={(v) => (v >= 1000 ? `$${Math.round(v / 1000)}k` : `$${v}`)}
                 />
                 <Tooltip
+                  contentStyle={{ background: '#fffdf5', border: '1px solid #ecdcaf', borderRadius: 0, boxShadow: '0 8px 24px -8px rgba(31,26,20,.25)', fontSize: 13 }}
                   formatter={(v, name) => [money(v), name]}
                   labelFormatter={(y) => `Year ${y}`}
                 />
@@ -156,7 +157,7 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
                   type="monotone"
                   dataKey="invested"
                   name="Contributed"
-                  stroke="#94a3b8"
+                  stroke="#a8946a"
                   strokeWidth={2}
                   fill="url(#gInvested)"
                 />
@@ -164,8 +165,8 @@ export default function GrowthCalculator({ profile, portfolioValue }) {
                   type="monotone"
                   dataKey="balance"
                   name="Balance"
-                  stroke="#4f46e5"
-                  strokeWidth={2.5}
+                  stroke="#157f49"
+                  strokeWidth={3}
                   fill="url(#gBalance)"
                 />
               </AreaChart>
@@ -211,7 +212,7 @@ function MiniStat({ label, value, accent }) {
     brand: 'text-brand-600',
   }
   return (
-    <div className="rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
+    <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
       <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
       <p className={`mt-1 text-lg font-extrabold tabular-nums ${colors[accent]}`}>{value}</p>
     </div>

@@ -71,7 +71,7 @@ export default function TransactionList({ transactions, categories, onAdd, onEdi
               <li key={t.id} className="group flex items-center gap-3 py-3">
                 <span
                   className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-white"
-                  style={{ backgroundColor: cat?.color || '#94a3b8' }}
+                  style={{ backgroundColor: cat?.color || '#a8946a' }}
                 >
                   <WalletIcon width={16} height={16} />
                 </span>
@@ -88,14 +88,14 @@ export default function TransactionList({ transactions, categories, onAdd, onEdi
                 </span>
                 <div className="flex shrink-0 items-center gap-1 opacity-0 transition group-hover:opacity-100">
                   <button
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand-600"
+                    className="rounded-none p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand-600"
                     onClick={() => onEdit(t)}
                     aria-label="Edit transaction"
                   >
                     <EditIcon width={16} height={16} />
                   </button>
                   <button
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
+                    className="rounded-none p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
                     onClick={() => onDelete(t.id)}
                     aria-label="Delete transaction"
                   >
@@ -115,9 +115,9 @@ function FilterChip({ active, onClick, children }) {
   return (
     <button
       onClick={onClick}
-      className={`chip border transition ${
+      className={`chip rounded-none border transition ${
         active
-          ? 'border-brand-600 bg-brand-600 text-white'
+          ? 'border-brand-700 bg-brand-700 text-white'
           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
       }`}
     >

@@ -32,7 +32,7 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
         <div className="flex items-center gap-2.5 min-w-0">
           <span
             className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${
-              complete ? 'bg-emerald-100 text-emerald-600' : 'bg-brand-100 text-brand-600'
+              complete ? 'bg-brand-100 text-brand-700' : 'bg-gold-100 text-gold-800 ring-1 ring-gold-300'
             }`}
           >
             {complete ? <CheckIcon /> : <TargetIcon />}
@@ -46,14 +46,14 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
         </div>
         <div className="flex shrink-0 gap-1">
           <button
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand-600"
+            className="rounded-none p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand-600"
             onClick={onEdit}
             aria-label="Edit goal"
           >
             <EditIcon width={16} height={16} />
           </button>
           <button
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
+            className="rounded-none p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600"
             onClick={() => setConfirmDelete(true)}
             aria-label="Delete goal"
           >
@@ -77,7 +77,7 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
       </div>
 
       {/* Status line */}
-      <div className="mt-4 rounded-xl bg-slate-50 p-3 ring-1 ring-slate-100">
+      <div className="mt-4 rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3">
         {complete ? (
           <p className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600">
             <CheckIcon width={16} height={16} /> Goal reached — nice work!
@@ -103,7 +103,7 @@ export default function GoalCard({ goal, onEdit, onDelete, onContribute }) {
               <button
                 key={amt}
                 onClick={() => onContribute(amt)}
-                className="chip border border-slate-200 bg-white text-slate-600 hover:border-brand-300 hover:text-brand-600"
+                className="chip rounded-none border border-gold-300 bg-gold-50 text-gold-900 transition hover:border-gold-500 hover:bg-gold-100"
               >
                 +${amt}
               </button>

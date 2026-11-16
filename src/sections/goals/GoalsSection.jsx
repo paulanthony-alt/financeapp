@@ -78,7 +78,7 @@ export default function GoalsSection() {
       </div>
 
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-slate-800">Your goals</h2>
+        <h2 className="font-display text-2xl font-semibold text-slate-900">Your goals</h2>
         <button className="btn-primary" onClick={() => setModal({ open: true, editing: null })}>
           <PlusIcon width={16} height={16} />
           New goal
