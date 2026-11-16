@@ -34,8 +34,17 @@ const prices = {
 
 describe('parseYahooChart', () => {
   it('reads closes by trading date and skips empty bars', () => {
-    const r = parseYahooChart(yahoo('AMZN', [['2026-11-13', 266.66], ['2026-11-14', null], ['2026-11-17', 270.123456]]))
+    const r = parseYahooChart(yahoo('AMZN', [['2026-11-13', 266.66], ['2026-11-14', null], ['2026-11-17', 270.123456]]), Date.parse('2026-11-18T12:00:00Z'))
     expect(r).toEqual({ symbol: 'AMZN', series: [['2026-11-13', 266.66], ['2026-11-17', 270.1235]] })
+  })
+  it('skips today’s bar until the market has closed', () => {
+    const json = yahoo('AMZN', [['2026-11-13', 266.66], ['2026-11-16', 261.75]])
+    // 11:30 am ET on Nov 16 (16:30 UTC): still trading, so no Nov 16 close yet.
+    expect(parseYahooChart(json, Date.parse('2026-11-16T16:30:00Z')).series).toEqual([['2026-11-13', 266.66]])
+    // 8:30 pm ET: the close is final.
+    expect(parseYahooChart(json, Date.parse('2026-11-17T01:30:00Z')).series.pop()).toEqual(['2026-11-16', 261.75])
+    // Earlier days are never dropped.
+    expect(parseYahooChart(json, Date.parse('2026-11-14T15:00:00Z')).series).toHaveLength(2)
   })
   it('throws a readable error when Yahoo reports one', () => {
     expect(() => parseYahooChart({ chart: { result: null, error: { description: 'No data found' } } })).toThrow('No data found')

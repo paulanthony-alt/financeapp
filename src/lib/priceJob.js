@@ -31,7 +31,10 @@ export function yahooSymbol(symbol) {
 export function mergeWithPrevious(fresh, previous, keepDays = 400) {
   const closes = { ...(previous?.closes || {}) }
   for (const [sym, series] of Object.entries(fresh)) {
-    const old = closes[sym] || []
+    // Fresh data is authoritative: anything in the old file dated after it (e.g.
+    // a mid-day price published by a daytime run) is dropped.
+    const freshEnd = series.length ? series[series.length - 1][0] : ''
+    const old = (closes[sym] || []).filter(([d]) => d <= freshEnd)
     const byDate = new Map(old)
     for (const [d, c] of series) byDate.set(d, c)
     closes[sym] = [...byDate.entries()].sort((a, b) => (a[0] < b[0] ? -1 : 1)).slice(-keepDays)
