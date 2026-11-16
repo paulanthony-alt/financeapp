@@ -1,10 +1,11 @@
-import { WalletIcon, ChartIcon, TargetIcon, BankIcon } from './Icons.jsx'
+import { WalletIcon, ChartIcon, TargetIcon, BankIcon, BellIcon } from './Icons.jsx'
 
 export const TABS = [
   { id: 'budget', label: 'Budget', icon: WalletIcon, desc: 'Track income & spending' },
   { id: 'invest', label: 'Investing', icon: ChartIcon, desc: 'Risk & projections' },
   { id: 'goals', label: 'Goals', icon: TargetIcon, desc: 'Savings targets' },
   { id: 'networth', label: 'Net worth', icon: BankIcon, desc: 'Assets & debts' },
+  { id: 'ipo', label: 'IPO watch', icon: BellIcon, desc: 'Upcoming listings' },
 ]
 
 function NavItem({ tab, active, onClick }) {
