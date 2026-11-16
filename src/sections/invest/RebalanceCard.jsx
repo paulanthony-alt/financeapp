@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 import { Card, CardHeader } from '../../components/ui/Card.jsx'
-import { useLocalStorage } from '../../hooks/useLocalStorage.js'
 import { rebalanceWithContribution, lookThroughMixed, suggestedFunds } from '../../lib/rebalance.js'
 import { ALLOCATION_COLORS } from '../../lib/constants.js'
 import { money } from '../../lib/format.js'
 
-export default function RebalanceCard({ summary, profile }) {
-  const [opts, setOpts] = useLocalStorage('fp:invest:rebalance', { contribution: 500, mixedStockPct: 60 })
+// `opts` ({ contribution, mixedStockPct }) is owned by the Investing tab so the
+// ideas card can use the same contribution amount.
+export default function RebalanceCard({ summary, profile, opts, setOpts }) {
   const mixed = summary.byClass.Mixed || 0
 
   const current = useMemo(

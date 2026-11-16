@@ -318,3 +318,48 @@ describe('nightly price sync', () => {
     }
   })
 })
+
+describe('investment ideas', () => {
+  it('shows starter ideas with no portfolio, and portfolio-based ideas after import', async () => {
+    store.set('fp:activeTab', 'invest')
+    const { unmount } = render(<App />)
+    const card = (await screen.findByText('Ideas for your portfolio')).closest('.card')
+    expect(within(card).getByText('Start with a broad US stock index fund')).toBeTruthy()
+    unmount()
+
+    store.set('fp:invest:portfolio', {
+      importedAt: '2026-11-16T05:00:00.000Z', fileName: 'p.csv', accountCount: 1,
+      holdings: [
+        { symbol: 'FXAIX', description: 'FIDELITY 500 INDEX FUND', value: 500, quantity: 2 },
+        { symbol: 'NVDA', description: 'NVIDIA CORPORATION COM', value: 500, quantity: 3 },
+      ],
+    })
+    store.set('fp:invest:override', 'moderate')
+    render(<App />)
+    const card2 = (await screen.findByText('Ideas for your portfolio')).closest('.card')
+    expect(within(card2).getByText('Send new money to a broad index fund instead of more single stocks')).toBeTruthy()
+    expect(within(card2).getByText('Add international stocks')).toBeTruthy()
+    expect(within(card2).getByText('Add bonds to reach your target mix')).toBeTruthy()
+    expect(within(card2).getAllByText('FTIHX').length).toBeGreaterThan(0)
+  })
+
+  it('updates the bond amount when the next contribution changes', async () => {
+    store.set('fp:activeTab', 'invest')
+    store.set('fp:invest:override', 'moderate')
+    store.set('fp:invest:portfolio', {
+      importedAt: '2026-11-16T05:00:00.000Z', fileName: 'p.csv', accountCount: 1,
+      holdings: [{ symbol: 'FXAIX', description: 'FIDELITY 500 INDEX FUND', value: 1000, quantity: 4 }],
+    })
+    render(<App />)
+    const ideas = (await screen.findByText('Ideas for your portfolio')).closest('.card')
+    fireEvent.change(screen.getByLabelText('I’m about to invest'), { target: { value: '100' } })
+    await waitFor(() => expect(within(ideas).getByText(/Of your next \$100, about \$\d+ would go to bonds/)).toBeTruthy())
+  })
+
+  it('shows the IPO checklist on the IPO watch tab', async () => {
+    store.set('fp:activeTab', 'ipo')
+    render(<App />)
+    expect(await screen.findByText('Before you buy an IPO')).toBeTruthy()
+    expect(screen.getByText('Mind the lock-up')).toBeTruthy()
+  })
+})

@@ -17,6 +17,7 @@ import {
   DEFAULT_WATCHLIST,
 } from '../../lib/ipo.js'
 import { PlusIcon, TrashIcon, BellIcon, ExternalIcon } from '../../components/Icons.jsx'
+import IpoChecklist from './IpoChecklist.jsx'
 
 export default function IpoSection() {
   const [list, setList] = useLocalStorage('fp:ipo:watchlist', () => DEFAULT_WATCHLIST(todayISO()))
@@ -42,8 +43,9 @@ export default function IpoSection() {
         <BellIcon width={18} height={18} className="mt-0.5 shrink-0 text-brand-700" />
         <p>
           A scheduled check looks for IPO news and SEC filings for your list each weekday and notifies you when
-          something moves. Update a company’s stage here when it does. The app doesn’t fetch live data itself, so
-          use the links on each company to confirm.
+          something moves. When a company gets close to listing, the report includes a long-term verdict and how it
+          would fit your portfolio; on Mondays it also lists notable upcoming IPOs. Update a company’s stage here when
+          it moves. The app doesn’t fetch live data itself, so use the links on each company to confirm.
         </p>
       </div>
 
@@ -66,6 +68,8 @@ export default function IpoSection() {
           ))}
         </div>
       )}
+
+      <IpoChecklist />
 
       <p className="text-xs text-slate-400">
         IPO shares often swing sharply in their first months of trading. For long-term investing, many people wait
