@@ -215,3 +215,57 @@ describe('IPO watch', () => {
     expect(await screen.findByText('No companies yet')).toBeTruthy()
   })
 })
+
+describe('one-tap import link', () => {
+  const CSV = `Account Name,Symbol,Description,Quantity,Current Value,Cost Basis Total
+Individual,FXAIX,FIDELITY 500 INDEX FUND,2,$500.00,$450.00
+Individual,MSFT,MICROSOFT CORP,1,$300.00,$200.00
+`
+  async function openWith(hash) {
+    const realLocation = window.location
+    const reload = vi.fn()
+    window.history.replaceState(null, '', `/${hash}`)
+    Object.defineProperty(window, 'location', { configurable: true, value: { ...realLocation, hash, pathname: '/', search: '', reload } })
+    render(<App />)
+    return { reload, restore: () => Object.defineProperty(window, 'location', { configurable: true, value: realLocation }) }
+  }
+
+  it('asks before importing, then saves and reloads', async () => {
+    const { makeImportLink } = await import('./lib/importLink.js')
+    const link = makeImportLink('https://x/', CSV, 'P.csv')
+    const { reload, restore } = await openWith(link.slice(link.indexOf('#')))
+    try {
+      expect(await screen.findByText(/This link contains 2 positions worth/)).toBeTruthy()
+      expect(window.localStorage.getItem('fp:invest:portfolio')).toBeNull()
+      fireEvent.click(screen.getByRole('button', { name: 'Import' }))
+      expect(reload).toHaveBeenCalled()
+      expect(store.get('fp:invest:portfolio').holdings.map((h) => h.symbol)).toEqual(['FXAIX', 'MSFT'])
+      expect(store.get('fp:activeTab')).toBe('invest')
+    } finally {
+      restore()
+    }
+  })
+
+  it('does nothing when cancelled', async () => {
+    const { makeImportLink } = await import('./lib/importLink.js')
+    const link = makeImportLink('https://x/', CSV)
+    const { reload, restore } = await openWith(link.slice(link.indexOf('#')))
+    try {
+      fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }))
+      expect(reload).not.toHaveBeenCalled()
+      expect(window.localStorage.getItem('fp:invest:portfolio')).toBeNull()
+      expect(screen.queryByText(/This link contains/)).toBeNull()
+    } finally {
+      restore()
+    }
+  })
+
+  it('explains a damaged link', async () => {
+    const { restore } = await openWith('#import=garbage')
+    try {
+      expect(await screen.findByText(/damaged or incomplete/)).toBeTruthy()
+    } finally {
+      restore()
+    }
+  })
+})
