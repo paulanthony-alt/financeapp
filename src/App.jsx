@@ -1,6 +1,7 @@
 import { lazy, Suspense, useId, useState } from 'react'
 import { Sidebar, TabBar, TABS } from './components/Sidebar.jsx'
 import DataModal from './components/DataModal.jsx'
+import ImportLinkModal from './components/ImportLinkModal.jsx'
 import { DatabaseIcon } from './components/Icons.jsx'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
 
@@ -72,6 +73,7 @@ export default function App() {
         </main>
       </div>
       <DataModal open={dataOpen} onClose={() => setDataOpen(false)} />
+      <ImportLinkModal />
     </div>
   )
 }
