@@ -13,6 +13,7 @@ import PortfolioCard from './PortfolioCard.jsx'
 import PortfolioHistory from './PortfolioHistory.jsx'
 import RebalanceCard from './RebalanceCard.jsx'
 import FundCostsCard from './FundCostsCard.jsx'
+import IdeasCard from './IdeasCard.jsx'
 import { AlertIcon } from '../../components/Icons.jsx'
 
 export default function InvestSection() {
@@ -25,6 +26,7 @@ export default function InvestSection() {
   const [classOverrides, setClassOverrides] = useLocalStorage('fp:invest:classOverrides', {})
 
   const [history, setHistory] = useLocalStorage('fp:invest:history', [])
+  const [rebalanceOpts, setRebalanceOpts] = useLocalStorage('fp:invest:rebalance', { contribution: 500, mixedStockPct: 60 })
 
   // Each import also saves a dated snapshot for the history chart.
   const importPortfolio = (next) => {
@@ -78,7 +80,9 @@ export default function InvestSection() {
         onOverride={(symbol, cls) => setClassOverrides((o) => ({ ...o, [symbol]: cls }))}
       />
 
-      {summary && <RebalanceCard summary={summary} profile={profile} />}
+      <IdeasCard summary={summary} profile={profile} contribution={rebalanceOpts.contribution} />
+
+      {summary && <RebalanceCard summary={summary} profile={profile} opts={rebalanceOpts} setOpts={setRebalanceOpts} />}
 
       {summary && <FundCostsCard summary={summary} profile={profile} />}
 
