@@ -1,0 +1,3 @@
+# Extra tickers for the nightly price job, one per line.
+# The app already covers common index funds and large S&P 500 companies;
+# add anything else you hold here (e.g. a smaller stock or another fund).

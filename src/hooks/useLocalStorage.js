@@ -1,5 +1,25 @@
 import { useEffect, useRef, useState } from 'react'
 
+const EVENT = 'fp-storage'
+
+/**
+ * Write a value from outside React (e.g. the nightly price sync) and tell any
+ * mounted useLocalStorage(key) to pick it up.
+ */
+export function writeStored(key, value) {
+  window.localStorage.setItem(key, JSON.stringify(value))
+  window.dispatchEvent(new CustomEvent(EVENT, { detail: { key } }))
+}
+
+export function readStored(key, fallback = null) {
+  try {
+    const raw = window.localStorage.getItem(key)
+    return raw == null ? fallback : JSON.parse(raw)
+  } catch {
+    return fallback
+  }
+}
+
 /**
  * Persist a piece of React state to localStorage.
  * Reads once on mount (lazy initializer) and writes on every change.
@@ -22,6 +42,17 @@ export function useLocalStorage(key, initialValue) {
   const keyRef = useRef(key)
   useEffect(() => {
     keyRef.current = key
+  }, [key])
+
+  // Pick up writes made through writeStored().
+  useEffect(() => {
+    const onWrite = (e) => {
+      if (e.detail?.key !== key) return
+      const next = readStored(key)
+      if (next != null) setValue(next)
+    }
+    window.addEventListener(EVENT, onWrite)
+    return () => window.removeEventListener(EVENT, onWrite)
   }, [key])
 
   useEffect(() => {

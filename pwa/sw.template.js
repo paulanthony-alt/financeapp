@@ -48,6 +48,22 @@ self.addEventListener('fetch', (event) => {
     return
   }
 
+  // Nightly prices: always try for fresh ones, fall back to the last copy offline.
+  if (url.pathname.endsWith('/prices.json')) {
+    event.respondWith(
+      fetch(req)
+        .then((res) => {
+          if (res.ok) {
+            const copy = res.clone()
+            caches.open(CACHE).then((c) => c.put(req, copy))
+          }
+          return res
+        })
+        .catch(() => caches.match(req, MATCH)),
+    )
+    return
+  }
+
   // Everything else (hashed, immutable files): cache first.
   event.respondWith(
     caches.match(req, MATCH).then(

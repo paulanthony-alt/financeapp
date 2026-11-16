@@ -4,6 +4,7 @@ import DataModal from './components/DataModal.jsx'
 import ImportLinkModal from './components/ImportLinkModal.jsx'
 import { DatabaseIcon } from './components/Icons.jsx'
 import { useLocalStorage } from './hooks/useLocalStorage.js'
+import { usePriceSync } from './hooks/usePriceSync.js'
 
 // Each tab loads on demand, so the first screen downloads less (the chart
 // library only comes in with the tabs that draw charts).
@@ -17,6 +18,7 @@ export default function App() {
   const [active, setActive] = useLocalStorage('fp:activeTab', 'budget')
 
   const [dataOpen, setDataOpen] = useState(false)
+  usePriceSync()
 
   const current = TABS.find((t) => t.id === active) || TABS[0]
 

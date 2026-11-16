@@ -4,6 +4,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # Nightly after US markets close and mutual-fund prices (e.g. FXAIX) are out:
+  # 01:30 UTC Tue–Sat = 8:30 pm EST / 9:30 pm EDT, Mon–Fri.
+  schedule:
+    - cron: '30 1 * * 2-6'
 
 # Allow the workflow to publish to GitHub Pages
 permissions:
@@ -34,6 +38,14 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Fetch closing prices
+        # Never blocks a deploy: on failure the previously published prices are kept.
+        continue-on-error: true
+        timeout-minutes: 10
+        env:
+          PREVIOUS_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/prices.json
+        run: node scripts/fetch-prices.mjs public/prices.json
 
       - name: Build
         run: npm run build

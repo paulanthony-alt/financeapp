@@ -21,3 +21,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated nightly by scripts/fetch-prices.mjs
+public/prices.json
