@@ -18,9 +18,12 @@ import {
 } from '../../lib/ipo.js'
 import { PlusIcon, TrashIcon, BellIcon, ExternalIcon } from '../../components/Icons.jsx'
 import IpoChecklist from './IpoChecklist.jsx'
+import { normalizeCompany } from '../../lib/ipoJob.js'
 
 export default function IpoSection() {
   const [list, setList] = useLocalStorage('fp:ipo:watchlist', () => DEFAULT_WATCHLIST(todayISO()))
+  const [tracked] = useLocalStorage('fp:ipo:tracked', null)
+  const trackedKeys = new Set((tracked?.names || []).map(normalizeCompany))
   const sorted = sortWatchlist(list)
   const close = list.filter(isClose).length
   const live = list.filter((c) => c.stage === 'trading').length
@@ -42,10 +45,11 @@ export default function IpoSection() {
       <div className="flex items-start gap-3 border border-brand-200 bg-brand-50 p-4 text-sm text-slate-700">
         <BellIcon width={18} height={18} className="mt-0.5 shrink-0 text-brand-700" />
         <p>
-          A scheduled check looks for IPO news and SEC filings for your list each weekday and notifies you when
-          something moves. When a company gets close to listing, the report includes a long-term verdict and how it
-          would fit your portfolio; on Mondays it also lists notable upcoming IPOs. Update a company’s stage here when
-          it moves. The app doesn’t fetch live data itself, so use the links on each company to confirm.
+          Each night the app checks SEC filings and market data for your list and moves companies forward on its
+          own: filed, priced, trading. You’ll see a banner when one moves. Your weekday IPO watch report adds news
+          and verdicts. When a company gets close to listing, the report includes a long-term verdict and how it
+          would fit your portfolio; on Mondays it also lists notable upcoming IPOs. You can still set a stage yourself
+          from news; the nightly check never moves a company backward.
         </p>
       </div>
 
@@ -61,6 +65,7 @@ export default function IpoSection() {
             <CompanyCard
               key={c.id}
               company={c}
+              nightly={tracked ? trackedKeys.has(normalizeCompany(c.name)) : null}
               onStage={(stage) => update(c.id, (x) => setStage(x, stage, todayISO()))}
               onChange={(patch) => update(c.id, (x) => ({ ...x, ...patch }))}
               onRemove={() => remove(c.id)}
@@ -122,7 +127,7 @@ function AddCompany({ existing, onAdd }) {
   )
 }
 
-function CompanyCard({ company: c, onStage, onChange, onRemove }) {
+function CompanyCard({ company: c, nightly, onStage, onChange, onRemove }) {
   const [confirm, setConfirm] = useState(false)
   const idx = stageIndex(c.stage)
   const info = stageInfo(c.stage)
@@ -196,6 +201,25 @@ function CompanyCard({ company: c, onStage, onChange, onRemove }) {
         </div>
         <span className="text-xs text-slate-400">Updated {prettyDate(c.updatedAt)}</span>
       </div>
+      {nightly === true && (
+        <p className="mt-2 text-xs text-brand-700">
+          Checked automatically each night on SEC EDGAR
+          {c.auto?.checkedAt ? `, last on ${prettyDate(c.auto.checkedAt.slice(0, 10))}` : ''}.
+          {c.auto?.url && (
+            <>
+              {' '}
+              <a href={c.auto.url} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
+                Latest filing{c.auto.form ? ` (${c.auto.form})` : ''}
+              </a>
+            </>
+          )}
+        </p>
+      )}
+      {nightly === false && (
+        <p className="mt-2 text-xs text-slate-500">
+          Not checked automatically yet. Ask Claude to add {c.name} to the nightly check (portfolio/ipo-watchlist.txt).
+        </p>
+      )}
 
       {c.history?.length > 1 && (
         <details className="mt-2 text-xs text-slate-500">

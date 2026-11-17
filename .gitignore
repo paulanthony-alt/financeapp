@@ -24,3 +24,4 @@ dist-ssr
 
 # Generated nightly by scripts/fetch-prices.mjs
 public/prices.json
+public/ipo-status.json

@@ -47,6 +47,16 @@ jobs:
           PREVIOUS_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/prices.json
         run: node scripts/fetch-prices.mjs public/prices.json
 
+      - name: Check IPO filings
+        # Never blocks a deploy: companies that can't be checked keep last night's status.
+        # SEC_CONTACT is a repository variable holding the contact email the SEC requires.
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          PREVIOUS_URL: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/ipo-status.json
+        run: node scripts/fetch-ipo-status.mjs public/ipo-status.json
+
       - name: Build
         run: npm run build
 

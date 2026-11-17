@@ -1,0 +1,19 @@
+name: Probe IPO check (temporary)
+on:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Run IPO check against real data
+        env:
+          SEC_CONTACT: ${{ vars.SEC_CONTACT }}
+          IPO_EXTRA: Reddit,Rubrik,Arm Holdings,Instacart
+        run: node scripts/fetch-ipo-status.mjs /tmp/ipo-status.json && head -c 2500 /tmp/ipo-status.json
